@@ -6,15 +6,20 @@ Created on Thu May 31 17:03:08 2018
 """
 import PIL
 import numpy as np 
+import os
 from PIL import Image
 class RandomMatrix: 
+    
+    script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+    rel_path = "Ababa.jpg"
+    bildpfad = os.path.join(script_dir, rel_path)
 
     notFinished = 0
     bild = Image
     #zwischen 0...255
     aKontrast= 3
 
-    img = Image.open("C:\Users\Leon\Documents\Batchelorprojekt\\Ababa.jpg")
+    img = Image.open(bildpfad)
     pixels = np.asarray(img)
     whiteMatrix = np.full((256,256,3), fill_value = 255, dtype=np.uint8)
     pixels.setflags(write=1)
