@@ -5,6 +5,7 @@ from psychopy import visual, core, event
 import random
 import numpy as np
 from matrix20180528 import RandomMatrix
+from Variablen import Variables
 
 fenster = visual.Window(
         color=[0.5,0.5,0.5],
@@ -14,6 +15,8 @@ fenster = visual.Window(
 
 ### Handler für Rauschmatrix
 randomHandler = RandomMatrix()
+## Variablen
+var = Variables()
 #clock für bild und voted für zurück setzen
 
 
@@ -33,10 +36,10 @@ stringCountV = "Count V: %s"%(counterV)
 stringCountNV = "Count NV: %s"%(counterNV)
 
 
-### Instruktionen für Keys
+### Instruktionen für Keys // Problem Bildschirmgröße
 v_keyInst = visual.TextStim(fenster,
                             'Y -> Stimulus vorhanden \nN -> Stimulus nicht vorhanden \nQ -> Experiment beenden',
-                            pos =[-800, 500])
+                            pos =[-400, 300])
 
 
 ### Maus erzeugen (momentan ungenutzt)
@@ -125,52 +128,52 @@ while True:
 
 ### Benutzer sagt Stimulus ist vorhanden
     if 'y' in keyInput:
-        if (newPicture == 0):
-            newPicture = 1
-            counterV = counterV + 1
-            stringCountV = "CountV:%s"%(counterV)
-            v_instruktionCounter = visual.TextStim(fenster, stringCountV +"          "+ stringCountNV, pos =[260, 280])
+#        if (newPicture == 0):
+#            newPicture = 1
+#            counterV = counterV + 1
+#            stringCountV = "CountV:%s"%(counterV)
+#            v_instruktionCounter = visual.TextStim(fenster, stringCountV +"          "+ stringCountNV, pos =[260, 280])
+#            
+        if (stimOrNot == True):
+            correctClock= core.Clock()
+            while correctClock.getTime() < var.feedback:
+                #image_Zeichnung.setAutoDraw(False)
+                v_posFeedback.draw()
+                fenster.flip()
+        else:
+            wrongClock= core.Clock()
+            while wrongClock.getTime() < var.feedback:
+                #image_Zeichnung.setAutoDraw(False)
+                v_negFeedback.draw()
+                fenster.flip()
             
-            if (stimOrNot == True):
-                correctClock= core.Clock()
-                while correctClock.getTime() < 0.3:
-                    image_Zeichnung.setAutoDraw(False)
-                    v_posFeedback.draw()
-                    fenster.flip()
-            else:
-                wrongClock= core.Clock()
-                while wrongClock.getTime() < 0.3:
-                    image_Zeichnung.setAutoDraw(False)
-                    v_negFeedback.draw()
-                    fenster.flip()
-            
-            stimOrNot = bool(random.getrandbits(1))
-            image_Zeichnung = newRand(stimOrNot)
-            newPicture = 0
+        stimOrNot = bool(random.getrandbits(1))
+        image_Zeichnung = newRand(stimOrNot)
+#            newPicture = 0
 
 
 ### Benutzer sagt Stimulus ist NICHT vorhanden
     if 'n' in keyInput:
-        if (newPicture == 0):
-            newPicture = 1
-            counterNV = counterNV + 1
-            stringCountNV = "CountNV:%s"%(counterNV)
-            v_instruktionCounter = visual.TextStim(fenster, stringCountV +"          "+ stringCountNV, pos =[260, 280])
+#        if (newPicture == 0):
+#            newPicture = 1
+#            counterNV = counterNV + 1
+#            stringCountNV = "CountNV:%s"%(counterNV)
+#            v_instruktionCounter = visual.TextStim(fenster, stringCountV +"          "+ stringCountNV, pos =[260, 280])
             
-            if (stimOrNot == False):
-                correctClock= core.Clock()
-                while correctClock.getTime() < 0.3:
-                    v_posFeedback.draw()
-                    fenster.flip()
-            else:
-                wrongClock= core.Clock()
-                while wrongClock.getTime() < 0.3:
-                    v_negFeedback.draw()
-                    fenster.flip()
+        if (stimOrNot == False):
+            correctClock= core.Clock()
+            while correctClock.getTime() < var.feedback:
+                v_posFeedback.draw()
+                fenster.flip()
+        else:
+            wrongClock= core.Clock()
+            while wrongClock.getTime() < var.feedback:
+                v_negFeedback.draw()
+                fenster.flip()
             
-            stimOrNot = bool(random.getrandbits(1))
-            image_Zeichnung= newRand(stimOrNot)
-            newPicture = 0
+        stimOrNot = bool(random.getrandbits(1))
+        image_Zeichnung= newRand(stimOrNot)
+#            newPicture = 0
 
 
 

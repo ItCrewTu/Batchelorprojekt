@@ -8,17 +8,18 @@ import PIL
 import numpy as np
 import os
 from PIL import Image
+from Variablen import Variables
 class RandomMatrix:
-
+    
+    var = Variables()
+    
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-    rel_path = "Ababa.jpg"
+    rel_path = var.bildname
     bildpfad = os.path.join(script_dir, rel_path)
 
     notFinished = 0
     bild = Image
-    #zwischen 0...255
-    aKontrast= 1.5
-
+    
     img = Image.open(bildpfad)
     pixels = np.asarray(img)
     whiteMatrix = np.full((256,256,3), fill_value = 255, dtype=np.uint8)
@@ -35,9 +36,9 @@ class RandomMatrix:
 
 
     while (i < len(indizes[0])):
-        inverseAMatrix[indizesX[i],indizesY[i],0]=aKontrast
-        inverseAMatrix[indizesX[i],indizesY[i],1]=aKontrast
-        inverseAMatrix[indizesX[i],indizesY[i],2]=aKontrast
+        inverseAMatrix[indizesX[i],indizesY[i],0]= var.kontrastDesZeichens
+        inverseAMatrix[indizesX[i],indizesY[i],1]= var.kontrastDesZeichens
+        inverseAMatrix[indizesX[i],indizesY[i],2]= var.kontrastDesZeichens
         i= i+1
     print(inverseAMatrix)
 
@@ -54,7 +55,7 @@ class RandomMatrix:
 
 
     def buildMatrixOhneA(self):
-        Matrix = np.random.normal(170,20,[256,256])
+        Matrix = np.random.normal(Variables().mittelwert,Variables().standartabweichung,[256,256])
         Matrix3D = np.zeros((256,256,3), dtype=np.uint8)
 #
         Matrix3D[:,:,0] = Matrix[:,:]
