@@ -21,18 +21,33 @@ class Variables:
     
     #Zeit ab welcher der versuch als ungültig markiert
     
-    #Zeit des Stimulus
+    
     
     #Zeit ab wann die Eingabe frei ist 
     
-    #länge der Maske 
+    
     
     #Trials 100
     trials = 100
     #Testtrials 5
     
+    
+    
+    
+    
+    ##### Zeiten 1....8 
+    
+    #Zeit 
+    fixationskreuz = 2
+    
+    #länge der Maske 
+    maske=2
+    #Zeit des Stimulus
+    stimulusZeit= 3
+    #Antwortperiode
+    antwortperiode= 3
     #Zeit Feedback
-    feedback = 0.8
+    feedback = 2
     
     
     
