@@ -1,14 +1,49 @@
 from __future__ import unicode_literals, division, print_function
 
 # modules aus PsychoPy importieren
-from psychopy import visual, core, event
+from psychopy import visual, core, event, gui
 import random
 import numpy as np
-from matrix20180528 import RandomMatrix
+import sys
+import os
 from Variablen import Variables
+from matrix20180528 import RandomMatrix
 
 
+### Sicherstellen, dass Pfad von selbem Verzeichnis wie dieses Skript startet
+_thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
+os.chdir(_thisDir)
 
+
+### Eingabefenster für Daten der Vpn, automatisch beim Start geöffnet
+eingabe = gui.Dlg(title="Signalentdeckung.py")
+
+eingabe.addField("Versuchsperson:")
+eingabe.addField("Durchgang:")
+
+eingabe.show()
+
+# Abbruch falls Cancel gedrückt wurde
+if eingabe.OK == False:
+    core.quit()
+
+nameVpn = eingabe.data[0]
+durchgangVpn = eingabe.data[1]
+
+data_path = _thisDir + os.sep + u'data/' + nameVpn + "_Durchgang_" + durchgangVpn + ".tsv"
+
+### Überprüfen ob Save-File schon existiert, um Überschreiben zu verhindern
+#data_path_exists = os.path.exists(data_path)
+##deaktiviert zum testen
+#if data_path_exists:
+#    sys.exit("Datei " + data_path + " existiert bereits!")
+#    
+
+### Array erstellen, in das gespeichert wird
+data = []
+
+
+### Fenster in dem tatsächliches Experiment dargestellt wird
 fenster = visual.Window(
         color=[0.5,0.5,0.5],
         fullscr=True,
@@ -98,7 +133,9 @@ fixiBlack = newFixi("black")
 
 ### Errechnen der Matrix mit Zufallszahlenfunktion
 def newRand(stim):
-    if (stim == True):
+    if (stim == True and var.zufallsKontrast == True):
+        neueMatrix =randomHandler.buildMatrixMitRandomA(randomHandler.inverseAMatrix)
+    elif (stim == True):
         neueMatrix =randomHandler.buildMatrixMitA(randomHandler.inverseAMatrix)
     else: 
         neueMatrix =randomHandler.buildMatrixOhneA()
@@ -238,10 +275,11 @@ while trial < var.trials:
                     antwort = 4
                     v_keyInst.setAutoDraw(False)
                     trialClock.reset()
-                
+               
+            
         if trialClock.getTime() > var.antwortperiode and maske2Done and not antwortDone: 
             
-            antwort = 0
+            
             trialClock.reset()
             v_keyInst.setAutoDraw(False)
             antwortDone = True
@@ -298,11 +336,27 @@ while trial < var.trials:
             antwortDone = False
             feedbackDone = False
             pauseDone = False
-            trial = trial + 1   
+            
+            trial = trial + 1
+            
             zurueckgesetzt = True
             clearBeforePress = True
+            
             stimOrNot = bool(random.getrandbits(1))
             image_Zeichnung= newRand(stimOrNot)
+            
+            data.append(
+                    [
+                           antwort                          
+                    ]
+            )
+            antwort = 0
+            np.savetxt(
+                    data_path,
+                    data,
+                    delimiter="\t" 
+                    #header="A,B"
+                    )
             
         if event.getKeys(keyList=["escape"])or event.getKeys(keyList=["q"]):
             fenster.close()
@@ -311,6 +365,7 @@ while trial < var.trials:
         if flipOn:  # don't flip if this routine is over or we'll get a blank screen
             fenster.flip()
             
-        
+    
+#print(data)
 
 fenster.close()        
