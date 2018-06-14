@@ -18,11 +18,8 @@ randomHandler = RandomMatrix()
 ## Variablen
 var = Variables()
 #clock für bild und voted für zurück setzen
+antwort= False
 
-# Rot/Grün/Schwarz Fixationskreuz
-fixiGreen  = newFixi("lime")
-fixiRed   = newFixi("red")
-fixiBlack = newFixi("black")
 
 ### Zufällig True oder False, entscheidet später ob Stimulus gezeichnet wird oder nicht
 stimOrNot = bool(random.getrandbits(1))
@@ -50,7 +47,7 @@ v_keyInst = visual.TextStim(fenster,
 v_mausObj = event.Mouse(win = fenster)
 
 ## farbe in string
-def newFixi (farbe):
+def newFixi(farbe):
 ### Positives Feedback (Richtige Antwort)
 ### Negatives Feedback (Falsche Antwort)
 
@@ -69,7 +66,10 @@ def newFixi (farbe):
 #        pos=[0,0]
         )
     return fixationskreuz
-
+# Rot/Grün/Schwarz Fixationskreuz
+fixiGreen  = newFixi("lime")
+fixiRed   = newFixi("red")
+fixiBlack = newFixi("black")
 
 ### Errechnen der Matrix mit Zufallszahlenfunktion
 def newRand(stim):
@@ -132,30 +132,31 @@ while True:
             fenster.flip()
             
         #Or button pressed
-        while trialClock.getTime() < var.fixationskreuz + var.maske*2 + var.stimulusZeit + var.antwortperiode:
-            
-            if 'y' in keyInput:
-#        if (newPicture == 0):
+        while trialClock.getTime() < var.fixationskreuz + var.maske*2 + var.stimulusZeit + var.antwortperiode or antwort == True:
+            keyInput = event.getKeys()
+            if 'y' in keyInput:#        if (newPicture == 0):
 #            newPicture = 1
 #            counterV = counterV + 1
 #            stringCountV = "CountV:%s"%(counterV)
 #            v_instruktionCounter = visual.TextStim(fenster, stringCountV +"          "+ stringCountNV, pos =[260, 280])
-#            
+                
                 if (stimOrNot == True):
-                    correctClock= core.Clock()
-                    while correctClock.getTime() < var.feedback:
+                     while trialClock.getTime() < var.fixationskreuz + var.maske*2 + var.stimulusZeit + var.antwortperiode + var.feedback:
                 #image_Zeichnung.setAutoDraw(False)
                         fixiGreen.draw()
                         fenster.flip()
+                        
                 else:
                     wrongClock= core.Clock()
-                    while wrongClock.getTime() < var.feedback:
+                    while trialClock.getTime() < var.fixationskreuz + var.maske*2 + var.stimulusZeit + var.antwortperiode + var.feedback:
                 #image_Zeichnung.setAutoDraw(False)
                         fixiRed.draw()
                         fenster.flip()
-            
+                        
+                ### nur für yes/no task
                 stimOrNot = bool(random.getrandbits(1))
                 image_Zeichnung = newRand(stimOrNot)
+                antwort=True
 #            newPicture = 0
 
 ### Benutzer sagt Stimulus ist NICHT vorhanden
@@ -168,41 +169,20 @@ while True:
             
                 if (stimOrNot == False):
                     correctClock= core.Clock()
-                    while correctClock.getTime() < var.feedback:
+                    while trialClock.getTime() < var.fixationskreuz + var.maske*2 + var.stimulusZeit + var.antwortperiode + var.feedback:
                         fixiGreen.draw()
                         fenster.flip()
                 else:
                     wrongClock= core.Clock()
-                    while wrongClock.getTime() < var.feedback:
+                    while trialClock.getTime() < var.fixationskreuz + var.maske*2 + var.stimulusZeit + var.antwortperiode + var.feedback:
                         fixiRed.draw()
                         fenster.flip()
             
                 stimOrNot = bool(random.getrandbits(1))
                 image_Zeichnung= newRand(stimOrNot)
+                antwort=True
             
-            
-            
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-                
-    
-                
+        antwort = False
 ### Fenster schließen
     if 'q' in keyInput:
         fenster.close()
