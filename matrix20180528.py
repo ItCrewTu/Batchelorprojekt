@@ -8,7 +8,8 @@ import PIL
 import numpy as np 
 from PIL import Image
 class RandomMatrix: 
-
+    #neueVersion
+    
     notFinished = 0
     bild = Image
     #zwischen 0...255
