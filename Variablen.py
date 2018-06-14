@@ -28,7 +28,11 @@ class Variables:
     
     
     #Trials 100
+<<<<<<< HEAD
     trials = 100
+=======
+    trials = 5
+>>>>>>> Leons-fuckaraund
     #Testtrials 5
     
     
@@ -38,6 +42,7 @@ class Variables:
     ##### Zeiten 1....8 
     
     #Zeit 
+<<<<<<< HEAD
     fixationskreuz = 2
     
     #länge der Maske 
@@ -48,6 +53,34 @@ class Variables:
     antwortperiode= 3
     #Zeit Feedback
     feedback = 2
+=======
+    fixationskreuz = 0
+    
+    #länge der Maske 
+    maske=0
+    
+    #Zeit des Stimulus
+    stimulusZeit= 1
+    #Antwortperiode
+    antwortperiode= 2
+    #Zeit Feedback
+    feedback = 0.5
+    #Pause
+    pause = 0.5
+    
+    
+    
+    ## lsg2. 0s
+    fixiActivated = True
+    
+    Activated = True
+    
+    Activated = True
+    Activated = True
+    Activated = True
+    Activated = True
+    
+>>>>>>> Leons-fuckaraund
     
     
     

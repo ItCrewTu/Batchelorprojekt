@@ -8,6 +8,7 @@ import PIL
 import numpy as np
 import os
 from PIL import Image
+<<<<<<< HEAD
 from Variablen import Variables
 class RandomMatrix:
     
@@ -17,6 +18,11 @@ class RandomMatrix:
     rel_path = var.bildname
     bildpfad = os.path.join(script_dir, rel_path)
 
+=======
+class RandomMatrix: 
+    #neueVersion
+    
+>>>>>>> Leons-fuckaraund
     notFinished = 0
     bild = Image
     
