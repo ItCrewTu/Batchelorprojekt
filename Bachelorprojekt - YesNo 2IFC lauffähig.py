@@ -51,7 +51,7 @@ data = []
 fenster = visual.Window(
         color=[0.5,0.5,0.5],
         fullscr=True,
-        size=[800,600],
+        size=[1366,768], ##funktion die sich Bildschirmgröße holt
         units='pix')
 started = True
 ### Handler für Rauschmatrix
@@ -212,7 +212,7 @@ if state == "Yes/No Task":
                 fixiBlack.setAutoDraw(True)
         
                     
-            if trialClock.getTime() > var.fixationskreuz and not fixiDone: 
+            if trialClock.getTime() >= var.fixationskreuz and not fixiDone: 
                 
                 trialClock.reset()
                 fixiBlack.setAutoDraw(False)
@@ -339,7 +339,7 @@ if state == "Yes/No Task":
                 feedbackDone = True
                 
             ##Pause 
-            if var.maske == 0:
+            if var.maske == 0 and feedbackDone and not maskeDone:
                 maskeDone = True
             
         #    if trialClock.getTime() < var.maske and fixiDone and not maskeDone:
@@ -421,8 +421,8 @@ if state == "2IFC":
         trialClock= core.Clock()
         
         while zurueckgesetzt == False:
-            
-    
+            print(fenster.monitorFramePeriod)
+            print(trial)
             
             ## Fixationskreuz wenn nicht aktiviert übersprungen 
     
@@ -616,7 +616,7 @@ if state == "2IFC":
                 
                 
             ##Pause 
-            if var.maske == 0:
+            if var.maske == 0 and fixiDone and not maskeDone:
                 maske4Done = True
             
         #    if trialClock.getTime() < var.maske and fixiDone and not maskeDone:
