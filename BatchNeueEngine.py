@@ -75,7 +75,6 @@ pixelStimulusNew = eingabe.data[10]
 print(pixelStimulusNew)
 trailablaufNew = eingabe.data[13]
 trailablaufNew.split()
-print(trailablaufNew)
 data_path = _thisDir + os.sep + u'data/' + nameVpn + "_Durchgang" + durchgangVpn + ".tsv"
 
 ### Überprüfen ob Save-File schon existiert, um Überschreiben zu verhindern

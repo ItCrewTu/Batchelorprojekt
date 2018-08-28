@@ -8,18 +8,16 @@ Created on Thu Jun 07 17:22:56 2018
 class Variables:
     
     #0...255 Helligkeitsunterschied zwischen Rauschen und Bild 
-    kontrastDesZeichens = 6
-    
+    kontrastDesZeichens = 5
     
     #Bild muss im Ordner des Projekts liegen
-    bildname = "Ababa - Kopie.jpg"
-    #Ababa (256) und Ababa - Kopie (64) und Ababa 128 (128)
+    bildname = "Ababa.jpg"
     
     ##Rauschmatrix
     #Mittelwert
-    mittelwert = 130
+    mittelwert = 170
     #Standartabweichung
-    standartabweichung = 25
+    standartabweichung = 20
     
     #Zeit ab welcher der versuch als ungültig markiert
     
@@ -28,25 +26,24 @@ class Variables:
     maxKontrast = 10
     #Zeit ab wann die Eingabe frei ist 
     
-    #Pixel pix x pix 
-    pix = 64
+    
     
     #Trials 100
 
     trials = 5
 
     #Zeit 
-    fixationskreuz = 0.25
+    fixationskreuz = 0
     
     #länge der Maske 
-    maske=0.3
+    maske=0
     
     #Zeit des Stimulus
-    stimulusZeit= 2.0/60.0
+    stimulusZeit= 1
     #Antwortperiode
     antwortperiode= 2
     #Zeit Feedback
-    feedback = 1
+    feedback = 0.5
     #Pause
     pause = 0.5
  
