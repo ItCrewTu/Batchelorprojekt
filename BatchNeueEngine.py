@@ -294,7 +294,7 @@ if init.state == "Yes/No Task":
                     fixiBlack.setAutoDraw(True)
                     ##EInmaliges ausführen
                     if not reseted:
-                        frameRemains = trialClock.getTime() + var.fixationskreuz - fenster.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.getTime() + init.fixationskreuzNew - fenster.monitorFramePeriod * 0.75
                         reseted = True
                         
                     if trialClock.getTime() > frameRemains:
@@ -306,7 +306,7 @@ if init.state == "Yes/No Task":
                 if trialAblauf [i]== 2 and i+1 < len(trialAblauf):
                     
                     if not reseted:
-                        frameRemains = trialClock.getTime() + var.maske - fenster.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.getTime() + init.maskeNew - fenster.monitorFramePeriod * 0.75
                         reseted = True
                     if trialClock.getTime() > frameRemains:
                         
@@ -317,7 +317,7 @@ if init.state == "Yes/No Task":
                     
                     rauschBild.setAutoDraw(True)
                     if not reseted:
-                        frameRemains = trialClock.getTime() + var.stimulusZeit - fenster.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.getTime() + init.stimuluszeitNew - fenster.monitorFramePeriod * 0.75
                         reseted = True
                         
                     if trialClock.getTime() > frameRemains:
@@ -329,7 +329,7 @@ if init.state == "Yes/No Task":
                 if trialAblauf [i]== 4 and i+ 1< len(trialAblauf):
                     
                     if not reseted:
-                        frameRemains = trialClock.getTime() + var.antwortperiode - fenster.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.getTime() + init.antwortperiodeNew - fenster.monitorFramePeriod * 0.75
                         reseted = True
                         
                     ##Rutine to clear all events before
@@ -340,7 +340,7 @@ if init.state == "Yes/No Task":
                     ##Event No
                     if event.getKeys(keyList=["n"]):
                         antwort = trialFkt.getAnswer(False, stimOrNot)
-                        antwortZeit = (var.antwortperiode - fenster.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        antwortZeit = (init.antwortperiodeNew - fenster.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
                         reseted = False
                         clearBeforePress = True
@@ -348,12 +348,12 @@ if init.state == "Yes/No Task":
                     ##Event Yes
                     if event.getKeys(keyList=["y"]):
                         antwort = trialFkt.getAnswer(True, stimOrNot)
-                        antwortZeit = (var.antwortperiode - fenster.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        antwortZeit = (init.antwortperiodeNew - fenster.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
                         clearBeforePress = True
                         reseted = False
                     
-                    if trialClock.getTime() >var.antwortperiode:
+                    if trialClock.getTime() > init.antwortperiodeNew:
                         antwort = 0
                         antwortZeit = 9999
                         i=i+1
@@ -362,7 +362,7 @@ if init.state == "Yes/No Task":
                 ##Feedback 
                 if trialAblauf[i]== 5 and i + 1< len(trialAblauf):
                     if not reseted:
-                        frameRemains = trialClock.getTime() +var.feedback- fenster.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.getTime() + init.feedbackzeitNew - fenster.monitorFramePeriod * 0.75
                         reseted = True
                     
                     print(antwort)
@@ -382,10 +382,12 @@ if init.state == "Yes/No Task":
                         zeichnungFeedback.setAutoDraw(False)
                         i= i+1 
                         reseted = False
+                        
+                ## pause
                 
                 if trialAblauf [i]== 6 and i +1 < len(trialAblauf):
                     if not reseted:
-                        frameRemains = trialClock.reset() + var.feedback- fenster.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.reset() + init.pauseNew - fenster.monitorFramePeriod * 0.75
                         reseted = True
                         
                     if trialClock.getTime() > frameRemains:

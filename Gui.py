@@ -25,19 +25,21 @@ class StateCheckIn:
     eingabe.addText("Einstellungen:")
     
     eingabe.addField("Trialanzahl:",2) ##3
-    eingabe.addField("1 = Fixationskreuz",)  ##4
-    eingabe.addField("2 = Maske:",) ##5
-    eingabe.addField("3 = Stimuluszeit",) ##6
-    eingabe.addField("4 = Antwortperiode:",) ##7
-    eingabe.addField("5 = Feedbackzeit",) ##8
-    eingabe.addField("6 = Pause:",) ##9
+    eingabe.addField("1 = Fixationskreuz",0)  ##4
+    eingabe.addField("2 = Maske:",0) ##5
+    eingabe.addField("3 = Stimuluszeit",0.5) ##6
+    eingabe.addField("4 = Antwortperiode:",3) ##7
+    eingabe.addField("5 = Feedbackzeit",0.5) ##8
+    eingabe.addField("6 = Pause:",0.5) ##9
     
     eingabe.addField("Pixel Stimulus:", choices = ["32x32", "64x64","128x128"]) ##10
+
+    eingabe.addField("Stärke des Signals:",4) ##11
+    eingabe.addField("Mittelwert",128) ##12
     
-    eingabe.addField("Stärke des Signals:",) ##11
-    eingabe.addField("Zufällig:",False) ##12
-    
-    eingabe.addField("Trialablauf",) ##13
+    eingabe.addField("Standartabweichung",20) ##13
+    eingabe.addField("Zufällig:",False) ##14
+    eingabe.addField("Trialablauf",) ##15
     eingabe.show()
     
     

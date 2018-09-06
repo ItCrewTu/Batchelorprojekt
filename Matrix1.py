@@ -48,9 +48,9 @@ class RandomMatrix:
     
     
     while (i < len(indizes[0])):
-        inverseAMatrix[indizesX[i],indizesY[i],0]=var.kontrastDesZeichens
-        inverseAMatrix[indizesX[i],indizesY[i],1]=var.kontrastDesZeichens
-        inverseAMatrix[indizesX[i],indizesY[i],2]=var.kontrastDesZeichens
+        inverseAMatrix[indizesX[i],indizesY[i],0]= gu.signalstaerkeNew
+        inverseAMatrix[indizesX[i],indizesY[i],1]= gu.signalstaerkeNew
+        inverseAMatrix[indizesX[i],indizesY[i],2]= gu.signalstaerkeNew
         i= i+1
         #print(inverseAMatrix)
 
@@ -86,7 +86,7 @@ class RandomMatrix:
 
 
     def buildMatrixOhneA(self):
-        Matrix = np.random.normal(Variables().mittelwert, Variables().standartabweichung,[self.pixelwidth,self.pixelwidth])
+        Matrix = np.random.normal(self.gu.mittelwertNew, self.gu.standartabweichungNew,[self.pixelwidth,self.pixelwidth])
         Matrix3D = np.zeros((self.pixelwidth,self.pixelwidth,3), dtype=np.uint8)
 #
         Matrix3D[:,:,0] = Matrix[:,:]

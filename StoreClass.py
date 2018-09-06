@@ -25,8 +25,10 @@ class VarStore(object):
         self.pauseNew = self.gui.eingabe.data[9]
         
         self.pixelStimulusNew = self.gui.eingabe.data[10]
+        self.signalstaerkeNew = self.gui.eingabe.data[11]
+        self.mittelwertNew = self.gui.eingabe.data[12]
         
-        self.trailablaufNew = self.gui.eingabe.data[13]
+        self.standartabweichungNew = self.gui.eingabe.data[13]
 #        trailablaufNew.split()
         
         self.data_path = self.gui._thisDir + os.sep + u'data/' + self.nameVpn + "_Durchgang" + self.durchgangVpn + ".tsv"

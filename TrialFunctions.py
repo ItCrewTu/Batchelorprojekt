@@ -21,5 +21,7 @@ class TrialFunctions:
         if (stimulus == False and keyTorF == False):
             self.antwort = 4
             
-        return self.antwort             
+        return self.antwort    
+
+##         
               
