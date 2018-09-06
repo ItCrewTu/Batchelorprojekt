@@ -46,5 +46,11 @@ class Variables:
     feedback = 0.5
     #Pause
     pause = 0.5
+    
+    
+    ##################
+    
+    
+    
  
     

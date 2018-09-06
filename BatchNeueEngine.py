@@ -8,7 +8,7 @@ Created on Wed Jul 18 10:44:36 2018
 from __future__ import unicode_literals, division, print_function
 
 # modules aus PsychoPy importieren
-from psychopy import core, event, gui, visual
+from psychopy import core, event, visual
 import random
 import numpy as np
 import sys
@@ -16,67 +16,72 @@ import os
 from Variablen1 import Variables
 from Matrix1 import RandomMatrix
 from TrialFunctions import TrialFunctions
+from Gui import StateCheckIn
+from StoreClass import VarStore
 
 #from state import State
 
+init = VarStore()
+init.__init__()
 
 
 ### Sicherstellen, dass Pfad von selbem Verzeichnis wie dieses Skript startet
-_thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
-os.chdir(_thisDir)
-
-
-### Eingabefenster für Daten der Vpn, automatisch beim Start geöffnet
-eingabe = gui.Dlg(title="Signalentdeckung.py")
-
-eingabe.addField("Versuchsperson:")##0
-eingabe.addField("Durchgang:") ##1
-eingabe.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC"]) ##2
-
-
-
-eingabe.addText("Einstellungen:")
-eingabe.addField("Trialanzahl:",2) ##3
-eingabe.addField("1 = Fixationskreuz",)  ##4
-eingabe.addField("2 = Maske:",) ##5
-eingabe.addField("3 = Stimuluszeit",) ##6
-eingabe.addField("4 = Antwortperiode:",) ##7
-eingabe.addField("5 = Feedbackzeit",) ##8
-eingabe.addField("6 = Pause:",) ##9
-
-eingabe.addField("Pixel Stimulus:", choices = ["32x32", "64x64","128x128"]) ##10
-
-eingabe.addField("Stärke des Signals:",) ##11
-eingabe.addField("Zufällig:",False) ##12
-
-eingabe.addField("Trialablauf",) ##13
-eingabe.show()
+#_thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
+#os.chdir(_thisDir)
+#
+#
+#### Eingabefenster für Daten der Vpn, automatisch beim Start geöffnet
+#eingabe = gui.Dlg(title="Signalentdeckung.py")
+#
+#eingabe.addField("Versuchsperson:")##0
+#eingabe.addField("Durchgang:") ##1
+#eingabe.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC"]) ##2
+#
+#
+#
+#eingabe.addText("Einstellungen:")
+#eingabe.addField("Trialanzahl:",2) ##3
+#eingabe.addField("1 = Fixationskreuz",)  ##4
+#eingabe.addField("2 = Maske:",) ##5
+#eingabe.addField("3 = Stimuluszeit",) ##6
+#eingabe.addField("4 = Antwortperiode:",) ##7
+#eingabe.addField("5 = Feedbackzeit",) ##8
+#eingabe.addField("6 = Pause:",) ##9
+#
+#eingabe.addField("Pixel Stimulus:", choices = ["32x32", "64x64","128x128"]) ##10
+#
+#eingabe.addField("Stärke des Signals:",) ##11
+#eingabe.addField("Zufällig:",False) ##12
+#
+#eingabe.addField("Trialablauf",) ##13
+#eingabe.show()
 
 # Abbruch falls Cancel gedrückt wurde
-if eingabe.OK == False:
-    core.quit()
+if init.gui.eingabe.OK == False:
+    init.gui.core.quit()
     
+   
     
 ###### ab hier wenn ok gedrückt wird #######
     
-    
-nameVpn = eingabe.data[0]
-durchgangVpn = eingabe.data[1]
-state = eingabe.data[2]
-trialanzahlNew = eingabe.data[3]
-fixationskreuzNew = eingabe.data[4]
-maskeNew = eingabe.data[5]
-stimuluszeitNew = eingabe.data[6]
-antwortperiodeNew = eingabe.data[7]
-feedbackzeitNew = eingabe.data[8]
-pauseNew = eingabe.data[9]
-
-pixelStimulusNew = eingabe.data[10]
-print(pixelStimulusNew)
-trailablaufNew = eingabe.data[13]
-trailablaufNew.split()
-print(trailablaufNew)
-data_path = _thisDir + os.sep + u'data/' + nameVpn + "_Durchgang" + durchgangVpn + ".tsv"
+### Werte von Guiklasse übernehmen   
+#nameVpn = gui.eingabe.data[0]
+#durchgangVpn = gui.eingabe.data[1]
+#state = gui.eingabe.data[2]
+#trialanzahlNew = gui.eingabe.data[3]
+#fixationskreuzNew = gui.eingabe.data[4]
+#maskeNew = gui.eingabe.data[5]
+#stimuluszeitNew = gui.eingabe.data[6]
+#antwortperiodeNew = gui.eingabe.data[7]
+#feedbackzeitNew = gui.eingabe.data[8]
+#pauseNew = gui.eingabe.data[9]
+#
+#pixelStimulusNew = gui.eingabe.data[10]
+#print(pixelStimulusNew)
+#trailablaufNew = gui.eingabe.data[13]
+#trailablaufNew.split()
+#print(trailablaufNew)
+#data_path = gui._thisDir + os.sep + u'data/' + nameVpn + "_Durchgang" + durchgangVpn + ".tsv"
 
 ### Überprüfen ob Save-File schon existiert, um Überschreiben zu verhindern
 #data_path_exists = os.path.exists(data_path)
@@ -97,8 +102,13 @@ fenster = visual.Window(
         units='pix')
 started = True
 ### Handler für Rauschmatrix
-print(pixelStimulusNew)
+
 randomHandler = RandomMatrix()
+
+
+#randomHandler.__init__(gui)
+
+var = Variables() 
 #if pixelStimulusNew == "32x32":
 #    randomHandler.__init__(randomHandler,"Ababa - Kopie.jpg")
 #if pixelStimulusNew == "64x64":  
@@ -106,7 +116,7 @@ randomHandler = RandomMatrix()
 #if pixelStimulusNew == "128x128":
 #    randomHandler.__init__(randomHandler,"Ababa.jpg")
 ## Variablen
-var = Variables()
+
 #clock für bild und voted für zurück setzen
 
 
@@ -238,7 +248,7 @@ rauschBild2= newRand(stimOrNot2)
 
 
             ### Schleife mit Instruktionen die in jedem Frame ausgeführt werden 
-if state == "Yes/No Task":
+if init.state == "Yes/No Task":
     if trial == 0:
         beispielBild = newRand(True)
         beispielBild.draw()
@@ -250,7 +260,7 @@ if state == "Yes/No Task":
         fenster.flip()
         core.wait(1)
         
-    while trial < trialanzahlNew: ##Variables.trials
+    while trial < init.trialanzahlNew: ##Variables.trials
         zurueckgesetzt = False
         trialClock= core.Clock()
         while zurueckgesetzt == False:
@@ -271,7 +281,7 @@ if state == "Yes/No Task":
                 antwort = 0
                 
                 np.savetxt(
-                        data_path,
+                        init.data_path,
                         data,
                         delimiter="\t" 
                         #header="A,B"
@@ -393,5 +403,5 @@ if state == "Yes/No Task":
 print(data)
 D = np.array(data)
 correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
-print("%i/%i, %g%%"%(correct,trialanzahlNew,correct/trialanzahlNew*100))
+print("%i/%i, %g%%"%(correct,init.trialanzahlNew,correct/init.trialanzahlNew*100))
 fenster.close()        

@@ -10,11 +10,20 @@ import os
 import random
 from PIL import Image
 from Variablen import Variables
+from StoreClass import VarStore
+
 class RandomMatrix:
 
-        
+    gu = VarStore()
+    
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-    rel_path = "Ababa.jpg"
+    if gu.pixelStimulusNew == "32x32":
+        rel_path = "Ababa - Kopie.jpg"
+    if gu.pixelStimulusNew == "64x64":  
+        rel_path = "Ababa 128.jpg"
+    if gu.pixelStimulusNew == "128x128":
+        rel_path = "Ababa.jpg"
+#    rel_path = "Ababa.jpg"
     bildpfad = os.path.join(script_dir, rel_path)
 
     notFinished = 0
@@ -22,7 +31,9 @@ class RandomMatrix:
     var = Variables()
     img = Image.open(bildpfad)
     pixels = np.asarray(img)
-    whiteMatrix = np.full((256,256,3), fill_value = 255, dtype=np.uint8)
+    pixelwidth = len(pixels)
+    print(pixelwidth)
+    whiteMatrix = np.full((pixelwidth,pixelwidth,3), fill_value = 255, dtype=np.uint8)
     pixels.setflags(write=1)
     ##
     inverseAMatrix = whiteMatrix - pixels
@@ -75,8 +86,8 @@ class RandomMatrix:
 
 
     def buildMatrixOhneA(self):
-        Matrix = np.random.normal(Variables().mittelwert, Variables().standartabweichung,[256,256])
-        Matrix3D = np.zeros((256,256,3), dtype=np.uint8)
+        Matrix = np.random.normal(Variables().mittelwert, Variables().standartabweichung,[self.pixelwidth,self.pixelwidth])
+        Matrix3D = np.zeros((self.pixelwidth,self.pixelwidth,3), dtype=np.uint8)
 #
         Matrix3D[:,:,0] = Matrix[:,:]
         Matrix3D[:,:,1] = Matrix[:,:]
