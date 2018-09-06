@@ -15,7 +15,7 @@ class Variables:
     
     ##Rauschmatrix
     #Mittelwert
-    mittelwert = 170
+    mittelwert = 128
     #Standartabweichung
     standartabweichung = 20
     
@@ -39,9 +39,9 @@ class Variables:
     maske=0
     
     #Zeit des Stimulus
-    stimulusZeit= 1
+    stimulusZeit= 0.5
     #Antwortperiode
-    antwortperiode= 2
+    antwortperiode= 3
     #Zeit Feedback
     feedback = 0.5
     #Pause

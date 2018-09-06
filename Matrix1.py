@@ -12,6 +12,7 @@ from PIL import Image
 from Variablen import Variables
 class RandomMatrix:
 
+        
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
     rel_path = "Ababa.jpg"
     bildpfad = os.path.join(script_dir, rel_path)
@@ -25,21 +26,22 @@ class RandomMatrix:
     pixels.setflags(write=1)
     ##
     inverseAMatrix = whiteMatrix - pixels
+    print(inverseAMatrix)
     indizes = np.where(inverseAMatrix[:,:,0] >= 1)
-    #print(len(indizes[0]))
-    #print(len(indizes[1]))
+        #print(len(indizes[0]))
+        #print(len(indizes[1]))
     indizesX = indizes[0]
     indizesY = indizes[1]
-
+    
     i=0
-
-
+    
+    
     while (i < len(indizes[0])):
         inverseAMatrix[indizesX[i],indizesY[i],0]=var.kontrastDesZeichens
         inverseAMatrix[indizesX[i],indizesY[i],1]=var.kontrastDesZeichens
         inverseAMatrix[indizesX[i],indizesY[i],2]=var.kontrastDesZeichens
         i= i+1
-    #print(inverseAMatrix)
+        #print(inverseAMatrix)
 
 
     def buildMatrixMitA(self, inverseAMatrix):
@@ -83,6 +85,7 @@ class RandomMatrix:
         self.bild = Image.fromarray(Matrix3D)
 
         return self.bild
+    
 
 #    im = Image.effect_noise((1,1), 50)
 #randomHandler = RandomMatrix()

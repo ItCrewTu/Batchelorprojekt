@@ -31,7 +31,7 @@ eingabe = gui.Dlg(title="Signalentdeckung.py")
 
 eingabe.addField("Versuchsperson:")##0
 eingabe.addField("Durchgang:") ##1
-eingabe.addField("State:", choices = ["Yes/No Task", "2IFC"]) ##2
+eingabe.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC"]) ##2
 
 
 
@@ -75,6 +75,7 @@ pixelStimulusNew = eingabe.data[10]
 print(pixelStimulusNew)
 trailablaufNew = eingabe.data[13]
 trailablaufNew.split()
+print(trailablaufNew)
 data_path = _thisDir + os.sep + u'data/' + nameVpn + "_Durchgang" + durchgangVpn + ".tsv"
 
 ### Überprüfen ob Save-File schon existiert, um Überschreiben zu verhindern
@@ -96,8 +97,14 @@ fenster = visual.Window(
         units='pix')
 started = True
 ### Handler für Rauschmatrix
-
+print(pixelStimulusNew)
 randomHandler = RandomMatrix()
+#if pixelStimulusNew == "32x32":
+#    randomHandler.__init__(randomHandler,"Ababa - Kopie.jpg")
+#if pixelStimulusNew == "64x64":  
+#    randomHandler.__init__(randomHandler,"Ababa 128.jpg")
+#if pixelStimulusNew == "128x128":
+#    randomHandler.__init__(randomHandler,"Ababa.jpg")
 ## Variablen
 var = Variables()
 #clock für bild und voted für zurück setzen
@@ -114,16 +121,17 @@ trial = 0
 #3 CORRECT REJECTION (noTrue)
 #4 MISS (noFalse)
 antwort = 0
-fixiDone = False
-maskeDone = False
-stimulusDone = False
-stimulus2Done = False
-maske2Done = False
-maske3Done = False 
-maske4Done = False 
-antwortDone = False
-feedbackDone = False
-pauseDone = False
+
+#fixiDone = False
+#maskeDone = False
+#stimulusDone = False
+#stimulus2Done = False
+#maske2Done = False
+#maske3Done = False 
+#maske4Done = False 
+#antwortDone = False
+#feedbackDone = False
+#pauseDone = False
 
 
 zurueckgesetzt = False
@@ -135,7 +143,7 @@ stimOrNot = bool(random.getrandbits(1))
 stimOrNot2 = False
 
 ## Initialisieren mit Gui
-trialAblauf = [trailablaufNew]
+trialAblauf = [1,2,3,4,5,6]
 print(trialAblauf)
 trialFkt = TrialFunctions()
 ### Variablen Initialisieren
@@ -380,294 +388,10 @@ if state == "Yes/No Task":
            
                 fenster.flip()
            
+
     
-
-                
-if state == "2IFC":
-        ### Instruktionen vor dem ersten Trial
-    if trial == 0:
-        beispielBild = newRand(True)
-        beispielBild.draw()
-        v_trialInst.draw()
-        fenster.flip()
-        event.waitKeys(keyList=["y","q","escape"])      #solange kein schließen möglich
-        fenster.flip()
-        core.wait(1)
-
-#        
-    while trial < var.trials:
-        zurueckgesetzt = False
-        trialClock= core.Clock()
-        
-        while zurueckgesetzt == False:
-            
-    
-            
-            ## Fixationskreuz wenn nicht aktiviert übersprungen 
-    
-            if var.fixationskreuz == 0 and not fixiDone:
-                fixiDone = True
-                
-            if trialClock.getTime() < var.fixationskreuz and not fixiDone:
-                        
-                fixiBlack.setAutoDraw(True)
-        
-                    
-            if trialClock.getTime() > var.fixationskreuz and not fixiDone: 
-                
-                trialClock.reset()
-                fixiBlack.setAutoDraw(False)
-                fixiDone = True
-            
-            
-            
-            
-            ## Maske 
-            
-            if var.maske == 0 and fixiDone and not maskeDone:
-                maskeDone = True
-            
-        #    if trialClock.getTime() < var.maske and fixiDone and not maskeDone:
-                
-            if trialClock.getTime() > var.maske and fixiDone and not maskeDone:
-                
-                trialClock.reset()
-                maskeDone = True
-                
-        
-        
-
-            ## Bild Zeigen
-            if var.stimulusZeit == 0 and maskeDone and not stimulusDone:
-                stimulusDone = True
-                
-            if trialClock.getTime() < var.stimulusZeit and maskeDone and not stimulusDone:
-                        
-                rauschBild.setAutoDraw(True)
-        
-                    
-            if trialClock.getTime() > var.stimulusZeit and maskeDone and not stimulusDone: 
-                
-                rauschBild.setAutoDraw(False)
-                stimulusDone = True
-                trialClock.reset()
-
-                
-                
-            
-            ## Maske nach Stimulus 
-            if var.maske == 0 and stimulusDone and not maske2Done:
-                maske2Done = True
-    
-            if trialClock.getTime() > var.maske and stimulusDone and not maske2Done:
-                
-                maske2Done = True
-                trialClock.reset()
-                
-
-                
-                
-                
-            ## Bild Zeigen
-            
-            
-            if var.stimulusZeit == 0 and maske2Done and not stimulus2Done:
-                stimulus2Done = True
-            
-            
-                
-                
-            if trialClock.getTime() < var.stimulusZeit and maske2Done and not stimulus2Done:
-                    
-                    
-                            
-                rauschBild2.setAutoDraw(True)
-            
-                        
-            if trialClock.getTime() > var.stimulusZeit and maske2Done and not stimulus2Done: 
-                    
-                trialClock.reset()
-                    
-                rauschBild2.setAutoDraw(False)
-                stimulus2Done = True
-                    
-                    
-                    
-                    
-                    
-             ## Maske nach Stimulus 
-            if var.maske == 0 and stimulus2Done and not maske3Done:
-                maske3Done = True
-            
-        #    if trialClock.getTime() < var.maske and fixiDone and not maskeDone:
-                
-            if trialClock.getTime() > var.maske and stimulus2Done and not maske3Done:
-                
-                trialClock.reset()
-                maske3Done = True
-                
-                
-                
-                
-                
-            ## Antwortzeit 
-            
-            if var.antwortperiode == 0 and maske3Done and not antwortDone:
-                antwortDone = True
-                
-            if trialClock.getTime() < var.antwortperiode and maske3Done and not antwortDone:
-                        
-                
-                
-                
-                if clearBeforePress == True:
-                    event.clearEvents()
-                    clearBeforePress = False 
-                    
-                if event.getKeys(keyList=["a"]):
-                    
-                    
-                    if (stimOrNot == True):
-                        antwortDone = True 
-                        antwort = 1
-    
-                        trialClock.reset()
-                        
-                    else:
-                        antwortDone = True
-                        antwort = 2
-
-                        trialClock.reset()
-                
-                 
-                if event.getKeys(keyList=["b"]):
-                    
-                    
-                    if (stimOrNot2 == True):
-                        antwortDone = True 
-                        antwort = 3
-
-                        trialClock.reset()
-                        
-                    else:
-                        antwortDone = True
-                        antwort = 4
-
-                        trialClock.reset()
-                   
-                
-            if trialClock.getTime() > var.antwortperiode and maske3Done and not antwortDone: 
-                
-                
-                trialClock.reset()
-          
-                antwortDone = True
-                
-            
-            
-            
-            
-            
-            
-            ##Feedback 
-            
-            if trialClock.getTime() < var.feedback and antwortDone and not feedbackDone:
-                
-                if antwort == 0 :
-                    zeichnungFeedback = fixiBlack
-                
-                if antwort == 1 or antwort == 3 :
-                    zeichnungFeedback = fixiGreen
-                    
-                if antwort == 2 or antwort == 4 :
-                    zeichnungFeedback = fixiRed
-                    
-                zeichnungFeedback.setAutoDraw(True)
-                
-            if trialClock.getTime() > var.feedback and antwortDone and not feedbackDone:
-                
-                zeichnungFeedback.setAutoDraw(False)
-                trialClock.reset()
-                feedbackDone = True
-                
-                
-                
-                
-                
-#            ##Pause 
-#            if var.maske == 0:
-#                maske4Done = True
-#            
-#        #    if trialClock.getTime() < var.maske and fixiDone and not maskeDone:
-#                
-#            if trialClock.getTime() > var.maske and fixiDone and not maske4Done:
-#                
-#                trialClock.reset()
-#                maske4Done = True
-                
-                
-                
-            if var.pause == 0 and feedbackDone and not pauseDone:
-                pauseDone = True
-        
-                    
-            if trialClock.getTime() > var.pause and feedbackDone and not pauseDone: 
-                
-                trialClock.reset()
-                pauseDone = True
-                
-            if pauseDone==True and not zurueckgesetzt:
-                fixiDone = False
-                maskeDone = False
-                stimulusDone = False
-                stimulus2Done=False
-                maske2Done = False
-                maske3Done = False 
-                maske4Done = False
-                antwortDone = False
-                feedbackDone = False
-                pauseDone = False
-                
-                trial = trial + 1
-                
-                zurueckgesetzt = True
-                clearBeforePress = True
-                
-              
-
-                
-                stimOrNot = bool(random.getrandbits(1))
-                rauschBild= newRand(stimOrNot)
-                if stimOrNot == True:
-                   stimOrNot2 = False
-                if stimOrNot == False: 
-                   stimOrNot2 = True
-                                
-                rauschBild2= newRand(stimOrNot2)
-                
-                data.append(
-                        [
-                               antwort                          
-                        ]
-                )
-                antwort = 0
-                np.savetxt(
-                        data_path,
-                        data,
-                        delimiter="\t" 
-                        #header="A,B"
-                        )
-                trialClock.reset()
-                
-            if event.getKeys(keyList=["escape"])or event.getKeys(keyList=["q"]):
-                fenster.close()
-        
-        
-            fenster.flip()
-            
-    
-#print(data)
+print(data)
 D = np.array(data)
 correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
-print("%i/%i, %g%%"%(correct,var.trials,correct/var.trials*100))
+print("%i/%i, %g%%"%(correct,trialanzahlNew,correct/trialanzahlNew*100))
 fenster.close()        
