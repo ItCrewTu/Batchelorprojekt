@@ -4,32 +4,64 @@ Created on Thu Sep 06 18:40:36 2018
 
 @author: Leon
 """
+
+"""
+###############################################################################
+############### Verzeichnis alter und neuer Variablennamen ####################
+###############################################################################
+
+guiInput = eingabe
+dataPath = data_path
+thisDir = _thisDir
+
+imageOfSignal = bildname
+minContrast = minKontrast
+maxContrast = maxKontrast
+randomContrast = zufallsKontrast
+signalContrastIntensity =  kontrastDesZeichens
+
+
+standardDeviationNoise = standardabweichungNew
+experimentType = state
+numberOfTrials = trialanzahlNew
+timeFixationCross = fixationskreuzNew
+timeBlankScreen = maskeNew
+timeStimulus = stimulusZeitNew
+timeAnswer = antwortperiodeNew
+timeFeedback = feedbackNew
+timePause = pauseNew
+
+meanNoise = mittelwertNew
+signalIntensity = signalstaerkeNew
+
+stimulusSizePixels = pixelStimulusNew
+"""
 from Gui import StateCheckIn
 import os
 
 class VarStore(object):
-    
+
     def __init__(self):
         self.gui = StateCheckIn()
-    
-    ### Werte von Guiklasse übernehmen   
-        self.nameVpn = self.gui.eingabe.data[0]
-        self.durchgangVpn = self.gui.eingabe.data[1]
-        self.state = self.gui.eingabe.data[2]
-        self.trialanzahlNew = self.gui.eingabe.data[3]
-        self.fixationskreuzNew = self.gui.eingabe.data[4]
-        self.maskeNew = self.gui.eingabe.data[5]
-        self.stimuluszeitNew = self.gui.eingabe.data[6]
-        self.antwortperiodeNew = self.gui.eingabe.data[7]
-        self.feedbackzeitNew = self.gui.eingabe.data[8]
-        self.pauseNew = self.gui.eingabe.data[9]
-        
-        self.pixelStimulusNew = self.gui.eingabe.data[10]
-        self.signalstaerkeNew = self.gui.eingabe.data[11]
-        self.mittelwertNew = self.gui.eingabe.data[12]
-        
-        self.standartabweichungNew = self.gui.eingabe.data[13]
+
+    ### Werte von Guiklasse übernehmen
+        self.nameVpn = self.gui.guiInput.data[0]
+        self.durchgangVpn = self.gui.guiInput.data[1]
+        self.experimentType = self.gui.guiInput.data[2]
+        self.numberOfTrials = self.gui.guiInput.data[3]
+        self.timeFixationCross = self.gui.guiInput.data[4]
+        self.timeBlankScreen = self.gui.guiInput.data[5]
+        self.timeStimulus = self.gui.guiInput.data[6]
+        self.timeAnswer = self.gui.guiInput.data[7]
+        self.timeFeedback = self.gui.guiInput.data[8]
+        self.timePause = self.gui.guiInput.data[9]
+
+        self.stimulusSizePixels = self.gui.guiInput.data[10]
+        self.signalIntensity = self.gui.guiInput.data[11]
+        self.meanNoise = self.gui.guiInput.data[12]
+
+        self.standardDeviationNoise = self.gui.guiInput.data[13]
 #        trailablaufNew.split()
-        
-        self.data_path = self.gui._thisDir + os.sep + u'data/' + self.nameVpn + "_Durchgang" + self.durchgangVpn + ".tsv"
-        
+        self.randomContrast = self.gui.guiInput.data[14]
+
+        self.dataPath = self.gui.thisDir + os.sep + u'data/' + self.nameVpn + "_Durchgang" + self.durchgangVpn + ".tsv"

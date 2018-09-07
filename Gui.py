@@ -7,45 +7,52 @@ Created on Thu Sep 06 16:32:11 2018
 
 @author: Leon
 """
+"""
+###############################################################################
+############### Verzeichnis alter und neuer Variablennamen ####################
+###############################################################################
 
+guiInput = eingabe
+thisDir = _thisDir
+
+"""
 class StateCheckIn:
-    
-    
-    _thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
-    os.chdir(_thisDir)
-    
-    
-    ### Eingabefenster für Daten der Vpn, automatisch beim Start geöffnet
-    eingabe = gui.Dlg(title="Signalentdeckung.py")
-    
-    eingabe.addField("Versuchsperson:")##0
-    eingabe.addField("Durchgang:") ##1
-    eingabe.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC"]) ##2
-    
-    eingabe.addText("Einstellungen:")
-    
-    eingabe.addField("Trialanzahl:",2) ##3
-    eingabe.addField("1 = Fixationskreuz",0)  ##4
-    eingabe.addField("2 = Maske:",0) ##5
-    eingabe.addField("3 = Stimuluszeit",0.5) ##6
-    eingabe.addField("4 = Antwortperiode:",3) ##7
-    eingabe.addField("5 = Feedbackzeit",0.5) ##8
-    eingabe.addField("6 = Pause:",0.5) ##9
-    
-    eingabe.addField("Pixel Stimulus:", choices = ["32x32", "64x64","128x128"]) ##10
 
-    eingabe.addField("Stärke des Signals:",4) ##11
-    eingabe.addField("Mittelwert",128) ##12
-    
-    eingabe.addField("Standartabweichung",20) ##13
-    eingabe.addField("Zufällig:",False) ##14
-    eingabe.addField("Trialablauf",) ##15
-    eingabe.show()
-    
-    
-    
+
+    thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
+    os.chdir(thisDir)
+
+
+    ### Eingabefenster für Daten der Vpn, automatisch beim Start geöffnet
+    guiInput = gui.Dlg(title="Signalentdeckung.py")
+
+    guiInput.addField("Versuchsperson:")##0
+    guiInput.addField("Durchgang:") ##1
+    guiInput.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC"]) ##2
+
+    guiInput.addText("Einstellungen:")
+
+    guiInput.addField("Trialanzahl:",10) ##3
+    guiInput.addField("1 = Dauer Fixationskreuz",0.3)  ##4
+    guiInput.addField("2 = Dauer Maske:",0.2) ##5
+    guiInput.addField("3 = Dauer Stimuluszeit",0.2) ##6
+    guiInput.addField("4 = Dauer Antwortperiode:",2) ##7
+    guiInput.addField("5 = Dauer Feedbackzeit",0.2) ##8
+    guiInput.addField("6 = Dauer Pause:",1) ##9
+
+    guiInput.addField("Stimulusgröße in Pixeln:", choices = ["32x32", "64x64","128x128"]) ##10
+    guiInput.addText("Signaleinstellungen:")
+
+    guiInput.addField("Stärke des Signals:",4) ##11
+    guiInput.addField("Mittelwert",128) ##12
+
+    guiInput.addField("Standartabweichung",20) ##13
+    guiInput.addField("Zufällig:",False) ##14
+    guiInput.addField("Trialablauf",) ##15
+    guiInput.show()
+
+
+
     # Abbruch falls Cancel gedrückt wurde
 #    if eingabe.OK == False:
 #        core.quit()
-        
-    
