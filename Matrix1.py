@@ -48,30 +48,17 @@ import numpy as np
 import os
 import random
 from PIL import Image
-<<<<<<< HEAD
 from Variablen import Variables
 from StoreClass import VarStore
 
 class RandomMatrix:
-=======
 #from Variablen import Variables
-from StoreClass import VarStore
->>>>>>> pascalsgrabbelkiste
+
+
 
     gu = VarStore()
     
-    script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-    if gu.pixelStimulusNew == "32x32":
-        rel_path = "Ababa - Kopie.jpg"
-    if gu.pixelStimulusNew == "64x64":  
-        rel_path = "Ababa 128.jpg"
-    if gu.pixelStimulusNew == "128x128":
-        rel_path = "Ababa.jpg"
-#    rel_path = "Ababa.jpg"
-    bildpfad = os.path.join(script_dir, rel_path)
-
-    gu = VarStore()
-    
+    print(gu.experimentType)    
     scriptDir = os.path.dirname(__file__) #<-- absolute dir the script is in
     if gu.stimulusSizePixels == "32x32":
         relPath = "Ababa - Kopie.jpg"
@@ -81,7 +68,7 @@ from StoreClass import VarStore
         relPath = "Ababa.jpg"
 #    relPath = "Ababa.jpg"
     imagePath = os.path.join(scriptDir, relPath)
-    
+    print(gu.trialComposition)
     minContrast = 3
     maxContrast = 20
     
@@ -107,15 +94,11 @@ from StoreClass import VarStore
     
     
     while (i < len(indizes[0])):
-<<<<<<< HEAD
-        inverseAMatrix[indizesX[i],indizesY[i],0]= gu.signalstaerkeNew
-        inverseAMatrix[indizesX[i],indizesY[i],1]= gu.signalstaerkeNew
-        inverseAMatrix[indizesX[i],indizesY[i],2]= gu.signalstaerkeNew
-=======
+
         inverseAMatrix[indizesX[i],indizesY[i],0]= gu.signalIntensity
         inverseAMatrix[indizesX[i],indizesY[i],1]= gu.signalIntensity
         inverseAMatrix[indizesX[i],indizesY[i],2]= gu.signalIntensity
->>>>>>> pascalsgrabbelkiste
+
         i= i+1
         #print(inverseAMatrix)
 
@@ -150,13 +133,9 @@ from StoreClass import VarStore
 
 
 
-<<<<<<< HEAD
-    def buildMatrixOhneA(self):
-        Matrix = np.random.normal(self.gu.mittelwertNew, self.gu.standartabweichungNew,[self.pixelwidth,self.pixelwidth])
-=======
     def buildMatrixWithoutSignal(self):
         Matrix = np.random.normal(self.gu.meanNoise, self.gu.standardDeviationNoise,[self.pixelwidth,self.pixelwidth])
->>>>>>> pascalsgrabbelkiste
+
         Matrix3D = np.zeros((self.pixelwidth,self.pixelwidth,3), dtype=np.uint8)
 #
         Matrix3D[:,:,0] = Matrix[:,:]
@@ -165,12 +144,8 @@ from StoreClass import VarStore
 
         self.image = Image.fromarray(Matrix3D)
 
-<<<<<<< HEAD
-        return self.bild
-=======
         return self.image
->>>>>>> pascalsgrabbelkiste
-    
+
 
 #    im = Image.effect_noise((1,1), 50)
 #randomHandler = RandomMatrix()

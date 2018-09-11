@@ -79,12 +79,12 @@ from Matrix1 import RandomMatrix
 from TrialFunctions import TrialFunctions
 from Gui import StateCheckIn
 from StoreClass import VarStore
+import matplotlib.pyplot as plt
 
 #from state import State
 
 init = VarStore()
 init.__init__()
-
 
 ### Sicherstellen, dass Pfad von selbem Verzeichnis wie dieses Skript startet
 #thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
@@ -114,7 +114,7 @@ init.__init__()
 #eingabe.addField("Stärke des Signals:",) ##11
 #eingabe.addField("Zufällig:",False) ##12
 #
-#eingabe.addField("Trialablauf",) ##13
+#eingabe.addField("init.trialComposition",) ##13
 #eingabe.show()
 
 # Abbruch falls Cancel gedrückt wurde
@@ -182,10 +182,12 @@ randomHandler = RandomMatrix()
 
 
 flipOn = True
-
+easyBlock = True
 trialWork = True
 
+trialRounds = 0
 trial = 0
+save = []
 #0 keine Antwort
 #1 HIT (yesTrue)
 #2 FALSE ALARM (yesFalse)
@@ -211,11 +213,11 @@ clearBeforePress = True
 
 ### Zufällig True oder False, entscheidet später ob Stimulus gezeichnet wird oder nicht
 stimOrNot = bool(random.getrandbits(1))
-stimOrNot2 = False
+stimOrNot2 = not stimOrNot
 
 ## Initialisieren mit Gui
-trialAblauf = [1,2,3,4,5,6]
-print(trialAblauf)
+#init.trialComposition = [1,2,3,4,5,6]
+print(init.trialComposition)
 trialFkt = TrialFunctions()
 ### Variablen Initialisieren
 # wenn neues Rauschen ausgewertet (1), wenn new Picture wieder frei gegeben (0)
@@ -307,12 +309,6 @@ def newRand(stim):
 
 ### Ausführen der Zufallszahlenfunktion
 rauschBild = newRand(stimOrNot)
-
-if stimOrNot == True:
-   stimOrNot2 = False
-if stimOrNot == False:
-   stimOrNot2 = True
-
 rauschBild2= newRand(stimOrNot2)
 
 
@@ -320,70 +316,81 @@ rauschBild2= newRand(stimOrNot2)
 
 
             ### Schleife mit Instruktionen die in jedem Frame ausgeführt werden
-if init.experimentType == "Yes/No Task":
-    if trial == 0:
+
+if trial == 0:
 
 
 
 
 
-        trialInst1.draw()
+    trialInst1.draw()
+    window.flip()
+    event.waitKeys(keyList=["w"])      #solange kein schließen möglich
+   # window.flip()
+    beispielBild = newRand(True)
+    beispielBild.draw()
+    trialInst2.draw()
+    window.flip()
+    event.waitKeys(keyList=["w"])      #solange kein schließen möglich
+    beispielBild = newRand(False)
+    beispielBild.draw()
+    trialInst3.draw()
+    window.flip()
+    event.waitKeys(keyList=["w"])      #solange kein schließen möglich
+    trialInst4.draw()
+    window.flip()
+    event.waitKeys(keyList=["w"])      #solange kein schließen möglich
+    countdownClock = core.CountdownTimer(3.5)
+
+    while countdownClock.getTime() > 0:
+        ### Instruktionen zu Beginn eines Trials
+
+        countdownInst = visual.TextStim(window,
+                        int(round(countdownClock.getTime())),
+                        pos =[0, 0])
+        countdownInst.draw()
         window.flip()
-        event.waitKeys(keyList=["w"])      #solange kein schließen möglich
-       # window.flip()
-        beispielBild = newRand(True)
-        beispielBild.draw()
-        trialInst2.draw()
-        window.flip()
-        event.waitKeys(keyList=["w"])      #solange kein schließen möglich
-        beispielBild = newRand(False)
-        beispielBild.draw()
-        trialInst3.draw()
-        window.flip()
-        event.waitKeys(keyList=["w"])      #solange kein schließen möglich
-        trialInst4.draw()
-        window.flip()
-        event.waitKeys(keyList=["w"])      #solange kein schließen möglich
-        countdownClock = core.CountdownTimer(5.5)
-
-        while countdownClock.getTime() > 0:
-            ### Instruktionen zu Beginn eines Trials
-
-            countdownInst = visual.TextStim(window,
-                            int(round(countdownClock.getTime())),
-                            pos =[0, 0])
-            countdownInst.draw()
-            window.flip()
 
 
 
-        i=0
-        reseted = False
+    i=0
+    reseted = False
 
 
-        core.wait(0.5)
-
-
-    while trial < init.numberOfTrials: ##Variables.trials
+    core.wait(0.5)
+while trialRounds < 4:
+    if trial==init.numberOfTrials:
+        D = np.array(data)
+        data = []
+        correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
+        print("%i/%i, %g%%"%(correct,init.numberOfTrials,correct/init.numberOfTrials*100))
+        save.insert(trialRounds,correct)
+        trialRounds = trialRounds +1
+        print(save)
+        trial = 0
+    while trial < init.numberOfTrials and trialRounds < 4: ##Variables.trials
         reset = False
         trialClock= core.Clock()
+        
+            
         while reset == False:
-
-#            print(i)
-
-
-
-            ##wenn trialAblauf durchgeführt in nächsten Trial i++
-            if len(trialAblauf) == i+1:
+    
+    #            print(i)
+    
+    
+    
+            ##wenn init.trialComposition durchgeführt in nächsten Trial i++
+            if len(init.trialComposition) == i+1:
                 trial = trial+1
                 reset = True
                 i=0
                 stimOrNot = bool(random.getrandbits(1))
                 rauschBild= newRand(stimOrNot)
+                easyBlock = True
                 ##Datenspeicherung
                 data.append([responseTestPerson])
                 responseTestPerson = 0
-
+    
                 np.savetxt(
                         init.dataPath,
                         data,
@@ -391,123 +398,272 @@ if init.experimentType == "Yes/No Task":
                         #header="A,B"
                         )
             else:
-
-
+    
+    
                 ##Fixationskreuz
-                if trialAblauf [i]== 1 and i +1 < len(trialAblauf):
+                if init.trialComposition [i]== 1 and i +1 < len(init.trialComposition):
                     fixiBlack.setAutoDraw(True)
                     ##EInmaliges ausführen
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeFixationCross - window.monitorFramePeriod * 0.75
                         reseted = True
-
+    
                     if trialClock.getTime() > frameRemains:
                         fixiBlack.setAutoDraw(False)
                         i= i+1
                         reseted = False
-
+    
                 ##Maske
-                if trialAblauf [i]== 2 and i+1 < len(trialAblauf):
-
+                if init.trialComposition [i]== 2 and i+1 < len(init.trialComposition):
+    
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeBlankScreen - window.monitorFramePeriod * 0.75
                         reseted = True
                     if trialClock.getTime() > frameRemains:
-
+    
                         i=i+1
                         reseted = False
-                ##Stimulus
-                if trialAblauf [i]== 3 and i + 1< len(trialAblauf):
-
+                ##Stimulus Yes No Task
+                if init.trialComposition [i]== 3 and i + 1< len(init.trialComposition):
+    
                     rauschBild.setAutoDraw(True)
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75
                         reseted = True
-
+    
                     if trialClock.getTime() > frameRemains:
                         rauschBild.setAutoDraw(False)
                         i= i+1
                         reseted = False
-
-                ##Antwortperiode
-                if trialAblauf [i]== 4 and i+ 1< len(trialAblauf):
-
+    
+                ##Antwortperiode Yes No Task
+                if init.trialComposition [i]== 4 and i+ 1< len(init.trialComposition):
+    
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeAnswer - window.monitorFramePeriod * 0.75
                         reseted = True
-
+    
                     ##Rutine to clear all events before
                     if clearBeforePress == True:
                         event.clearEvents()
                         clearBeforePress = False
-
+    
                     ##Event No
                     if event.getKeys(keyList=["n"]):
-                        responseTestPerson = trialFkt.getAnswer(False, stimOrNot)
+                        responseTestPerson = trialFkt.getAnswerYesNo(False, stimOrNot)
                         antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
                         reseted = False
                         clearBeforePress = True
-
+    
                     ##Event Yes
                     if event.getKeys(keyList=["y"]):
-                        responseTestPerson = trialFkt.getAnswer(True, stimOrNot)
+                        responseTestPerson = trialFkt.getAnswerYesNo(True, stimOrNot)
                         antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
                         clearBeforePress = True
                         reseted = False
-
-                    if trialClock.getTime() > init.timeAnswer:
+    
+                    if trialClock.getTime() > frameRemains:
                         responseTestPerson = 0
                         antwortZeit = 9999
                         i=i+1
                         reseted = False
-
+    
                 ##Feedback
-                if trialAblauf[i]== 5 and i + 1< len(trialAblauf):
+                if init.trialComposition[i]== 5 and i + 1< len(init.trialComposition):
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeFeedback - window.monitorFramePeriod * 0.75
                         reseted = True
-
+    
                     print(responseTestPerson)
-
+    
                     if responseTestPerson == 0 :
                         colourFeedback = fixiBlack
-
+    
                     if responseTestPerson == 1 or responseTestPerson == 3 :
                         colourFeedback = fixiGreen
-
+    
                     if responseTestPerson == 2 or responseTestPerson == 4 :
                         colourFeedback = fixiRed
-
+    
                     colourFeedback.setAutoDraw(True)
-
+    
                     if trialClock.getTime() > frameRemains:
                         colourFeedback.setAutoDraw(False)
                         i= i+1
                         reseted = False
-
+    
                 ## pause
-
-                if trialAblauf [i]== 6 and i +1 < len(trialAblauf):
+    
+                if init.trialComposition [i]== 6 and i +1 < len(init.trialComposition):
                     if not reseted:
-                        frameRemains = trialClock.reset() + init.timePause - window.monitorFramePeriod * 0.75
+                        frameRemains = trialClock.getTime() + init.timePause - window.monitorFramePeriod * 0.75
                         reseted = True
-
+    
                     if trialClock.getTime() > frameRemains:
                         i = i+1
                         reseted = False
-
+    
                 if event.getKeys(keyList=["escape"])or event.getKeys(keyList=["q"]):
                     window.close()
-
-
+    
+                
+                #### Stimulus 2IFC nimmt stim und macht -stim (first 3 than 7)
+              
+                if init.trialComposition [i]== 7 and i +1 < len(init.trialComposition):
+                    
+                    
+                    
+                    
+                    if not reseted:
+                        stimOrNot2 = not stimOrNot
+                            
+                        rauschBild= newRand(stimOrNot)
+                        rauschBild.setAutoDraw(True)
+                        
+                        frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75
+                        reseted = True
+                        
+                        
+                    if trialClock.getTime() > frameRemains:
+                        rauschBild.setAutoDraw(False)
+                        i = i+1
+                        reseted = False
+                    ### Auswertung 2IFC ##
+                if init.trialComposition [i]== 8 and i +1 < len(init.trialComposition):
+                    
+                    if not reseted:
+                        frameRemains = trialClock.getTime() + init.timeAnswer - window.monitorFramePeriod * 0.75
+                        reseted = True
+    
+                    ##Rutine to clear all events before
+                    if clearBeforePress == True:
+                        event.clearEvents()
+                        clearBeforePress = False
+    
+                    ##Event 1
+                    if event.getKeys(keyList=["1"]):
+                        responseTestPerson = trialFkt.getAnswer2IFC(1, stimOrNot2)
+                        antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        i=i+1
+                        reseted = False
+                        clearBeforePress = True
+    
+                    ##Event 2
+                    if event.getKeys(keyList=["2"]):
+                        responseTestPerson = trialFkt.getAnswer2IFC(2, stimOrNot)
+                        antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        i=i+1
+                        clearBeforePress = True
+                        reseted = False
+    
+                    if trialClock.getTime() > frameRemains:
+                        responseTestPerson = 0
+                        antwortZeit = 9999
+                        i=i+1
+                        reseted = False    
+                 #### Stimulus 4IFC nimmt stim und macht -stim (first 3 than 7)
+#                print(i)
+                if init.trialComposition [i]== 9 and i +1 < len(init.trialComposition):
+                    
+                    
+                    
+                    ##reseted = false wenn componente fertig ist
+                    if not reseted :
+                        ##easyBlock sorgt dafür dass random.randit pro Trial nur ein mal aktiviert werden kann
+                        
+                        
+                        
+                        
+                        if easyBlock == True :
+                            signalWithStim = random.randint(1,4)
+                            ##signalNumber = zählvariable 
+                            signalNumber=1
+                            ##Trialsperre aktiviert
+                            easyBlock = False
+                        if signalWithStim == signalNumber :
+                            rauschBild= newRand(True)
+                        
+                        else :
+                            rauschBild= newRand(False)
+                        rauschBild.setAutoDraw(True)
+                        signalNumber = signalNumber +1
+                        frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75
+                        ##reseted 
+                        reseted = True
+                        
+                    ##if time is over reseted = False (component done) 
+                    ## i wird eins hoch gezählt --> nächste Komponente im Array trialComposition
+                    if trialClock.getTime() > frameRemains:
+                        rauschBild.setAutoDraw(False)
+                        i = i+1
+                        reseted = False
+                        
+                        
+                    ###### Auswertung 4IFC ###
+                    
+                if init.trialComposition [i]== 10 and i +1 < len(init.trialComposition):
+                    
+                    if not reseted:
+                        frameRemains = trialClock.getTime() + init.timeAnswer - window.monitorFramePeriod * 0.75
+                        reseted = True
+    
+                    ##Rutine to clear all events before
+                    if clearBeforePress == True:
+                        event.clearEvents()
+                        clearBeforePress = False
+    
+                    ##Event 1
+                    if event.getKeys(keyList=["1"]):
+                        responseTestPerson =  trialFkt.getAnswer4IFC(1,signalWithStim)
+                        antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        i=i+1
+                        reseted = False
+                        clearBeforePress = True
+    
+                    ##Event 2
+                    if event.getKeys(keyList=["2"]):
+                        responseTestPerson = trialFkt.getAnswer4IFC(2,signalWithStim)
+                        antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        i=i+1
+                        clearBeforePress = True
+                        reseted = False
+                        
+                           ##Event 3
+                    if event.getKeys(keyList=["3"]):
+                        responseTestPerson = trialFkt.getAnswer4IFC(3,signalWithStim)
+                        antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        i=i+1
+                        reseted = False
+                        clearBeforePress = True
+    
+                    ##Event 4
+                    if event.getKeys(keyList=["4"]):
+                        responseTestPerson = trialFkt.getAnswer4IFC(4,signalWithStim)
+                        antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
+                        i=i+1
+                        clearBeforePress = True
+                        reseted = False
+                        
+                    if trialClock.getTime() > frameRemains:
+                        responseTestPerson = 0
+                        antwortZeit = 9999
+                        i=i+1
+                        reseted = False
+    
+                ####
                 window.flip()
-
-
-
-print(data)
-D = np.array(data)
-correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
-print("%i/%i, %g%%"%(correct,init.numberOfTrials,correct/init.numberOfTrials*100))
+    
+    
+    
+#    print(data)
+#    D = np.array(data)
+#    correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
+#    print("%i/%i, %g%%"%(correct,init.numberOfTrials,correct/init.numberOfTrials*100))
+#    save.insert(trialRounds,correct)
+#    trialRounds = trialRounds +1
+#    print(save)
+plt.plot(save)
+plt.show()
 window.close()

@@ -28,7 +28,7 @@ class StateCheckIn:
 
     guiInput.addField("Versuchsperson:")##0
     guiInput.addField("Durchgang:") ##1
-    guiInput.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC"]) ##2
+    guiInput.addField("Experimenttyp:", choices = ["Yes/No Task", "2IFC", "4IFC"]) ##2
 
     guiInput.addText("Einstellungen:")
 
