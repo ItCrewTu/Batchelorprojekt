@@ -52,64 +52,71 @@ from Variablen import Variables
 from StoreClass import VarStore
 
 class RandomMatrix:
-#from Variablen import Variables
 
-
-
-    gu = VarStore()
+    #L initilize the "static" variables (just one time needed)
+    def __init__(self):
     
-    print(gu.experimentType)    
-    scriptDir = os.path.dirname(__file__) #<-- absolute dir the script is in
-    if gu.stimulusSizePixels == "32x32":
-        relPath = "Ababa - Kopie.jpg"
-    if gu.stimulusSizePixels == "64x64":  
-        relPath = "Ababa 128.jpg"
-    if gu.stimulusSizePixels == "128x128":
-        relPath = "Ababa.jpg"
-#    relPath = "Ababa.jpg"
-    imagePath = os.path.join(scriptDir, relPath)
-    print(gu.trialComposition)
-    minContrast = 3
-    maxContrast = 20
+        #L creates an instance of VarStore to have acces to the parameters in the class
+        self.gu = VarStore()
     
-    notFinished = 0
-    image = Image
-#    var = Variables()
-    img = Image.open(imagePath)
-    pixels = np.asarray(img)
-    pixelwidth = len(pixels)
-    print(pixelwidth)
-    whiteMatrix = np.full((pixelwidth,pixelwidth,3), fill_value = 255, dtype=np.uint8)
-    pixels.setflags(write=1)
-    ##
-    inverseAMatrix = whiteMatrix - pixels
-    print(inverseAMatrix)
-    indizes = np.where(inverseAMatrix[:,:,0] >= 1)
-        #print(len(indizes[0]))
-        #print(len(indizes[1]))
-    indizesX = indizes[0]
-    indizesY = indizes[1]
+        print(self.gu.experimentType)    
+        scriptDir = os.path.dirname(__file__) #<-- absolute dir the script is in
+        
+        #L assign the picked pixesize to the variable relPath
+        if self.gu.stimulusSizePixels == "32x32":
+            relPath = "Ababa - Kopie.jpg"
+        if self.gu.stimulusSizePixels == "64x64":  
+            relPath = "Ababa 128.jpg"
+        if self.gu.stimulusSizePixels == "128x128":
+            relPath = "Ababa.jpg"
+    #    relPath = "Ababa.jpg"
+        imagePath = os.path.join(scriptDir, relPath)
+
+        
+        img = Image.open(imagePath)
+        
+        pixels = np.asarray(img)
+        #L save the pixel width 
+        self.pixelwidth = len(pixels)
+        print(self.pixelwidth)
+        #L creats matrix with as big as pixelwidth x pixelwidth full of 255 
+        whiteMatrix = np.full((self.pixelwidth,self.pixelwidth,3), fill_value = 255, dtype=np.uint8)
+        pixels.setflags(write=1)
+        #L calculate white Matrix - pixel of the Stimulus pixel by pixel
+        #L values > 0 where the A is everywhere else 0 
+        self.inverseAMatrix = whiteMatrix - pixels
+    #    print(inverseAMatrix)
+        #L safe every index wich parameter is bigger than 1  
+        #L indizes is like [[x-axis],[y-axis]]
+        self.indizes = np.where(self.inverseAMatrix[:,:,0] >= 1)
+            #print(len(indizes[0]))
+            #print(len(indizes[1]))
+        #L indizes of the x-axis
+        self.indizesX = self.indizes[0]
+        #L indizes of the y-axis
+        self.indizesY = self.indizes[1]
+        
+    #if the signal intensity is changed start this function to create a new random Matrix with give Intensity
+    def signalIntensityRefresh(self):
+        i=0
+        
+        while (i < len(self.indizes[0])):
     
-    i=0
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],0]= self.gu.signalIntensity
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],1]= self.gu.signalIntensity
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],2]= self.gu.signalIntensity
+    
+            i= i+1
+            #print(inverseAMatrix)
     
     
-    while (i < len(indizes[0])):
-
-        inverseAMatrix[indizesX[i],indizesY[i],0]= gu.signalIntensity
-        inverseAMatrix[indizesX[i],indizesY[i],1]= gu.signalIntensity
-        inverseAMatrix[indizesX[i],indizesY[i],2]= gu.signalIntensity
-
-        i= i+1
-        #print(inverseAMatrix)
-
-
     def buildMatrixWithSignal(self, inverseAMatrix):
-
+    
         noiseSignalMatrix = (RandomMatrix().buildMatrixWithoutSignal())+ inverseAMatrix
-
-#        noiseSignalMatrix = noiseSignalMatrix/(noiseSignalMatrix.max()/255,0)
-#        noiseSignalMatrix.max(255)
-        #print(inverseAMatrix)
+    
+    #        noiseSignalMatrix = noiseSignalMatrix/(noiseSignalMatrix.max()/255,0)
+    #        noiseSignalMatrix.max(255)
+            #print(inverseAMatrix)
         self.image = Image.fromarray(noiseSignalMatrix)
         return self.image
 

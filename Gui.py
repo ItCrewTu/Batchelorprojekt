@@ -18,7 +18,8 @@ thisDir = _thisDir
 """
 class StateCheckIn:
 
-
+    #L if this class is started, it open up our Gui 
+    
     thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
     os.chdir(thisDir)
 
@@ -33,22 +34,26 @@ class StateCheckIn:
     guiInput.addText("Einstellungen:")
 
     guiInput.addField("Trialanzahl:",10) ##3
-    guiInput.addField("1 = Dauer Fixationskreuz",0.3)  ##4
-    guiInput.addField("2 = Dauer Maske:",0.2) ##5
-    guiInput.addField("3 = Dauer Stimuluszeit",0.2) ##6
-    guiInput.addField("4 = Dauer Antwortperiode:",2) ##7
-    guiInput.addField("5 = Dauer Feedbackzeit",0.2) ##8
-    guiInput.addField("6 = Dauer Pause:",1) ##9
+    guiInput.addField("Anzahl der Trialblocks", 10)##4
+    guiInput.addField("Dauer Fixationskreuz",0.3)  ##5
+    guiInput.addField("Dauer Maske:",0.2) ##6
+    guiInput.addField("Dauer Stimuluszeit",0.2) ##7
+    guiInput.addField("Dauer Antwortperiode:",2) ##8
+    guiInput.addField("Dauer Feedbackzeit",0.2) ##9
+    guiInput.addField("Dauer Pause:",1) ##10
 
-    guiInput.addField("Stimulusgröße in Pixeln:", choices = ["32x32", "64x64","128x128"]) ##10
+    guiInput.addField("Stimulusgröße in Pixeln:", choices = ["32x32", "64x64","128x128"]) ##11
     guiInput.addText("Signaleinstellungen:")
 
-    guiInput.addField("Stärke des Signals:",4) ##11
-    guiInput.addField("Mittelwert",128) ##12
+    guiInput.addField("Stärke des Signals:",4) ##12
+    guiInput.addField("Mittelwert",128) ##13
 
-    guiInput.addField("Standartabweichung",20) ##13
-    guiInput.addField("Zufällig:",False) ##14
-    guiInput.addField("Trialablauf",) ##15
+    guiInput.addField("Standartabweichung",20) ##14
+    
+#    guiInput.addField("Trialablauf",) #
+    guiInput.addField("Kontrast - X je Trialblock",True)##15
+    guiInput.addField("Schrittweite",1)##16
+    guiInput.addField("Zufällig:",False)##17
     guiInput.show()
 
 

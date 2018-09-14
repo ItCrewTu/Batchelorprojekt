@@ -81,9 +81,9 @@ from Gui import StateCheckIn
 from StoreClass import VarStore
 import matplotlib.pyplot as plt
 
-#from state import State
-
+#L erstellt Objekt der klasse VarStore (StoreClass)
 init = VarStore()
+#L initialisiert VarStore Objekt mit Gui Elementen
 init.__init__()
 
 ### Sicherstellen, dass Pfad von selbem Verzeichnis wie dieses Skript startet
@@ -117,7 +117,7 @@ init.__init__()
 #eingabe.addField("init.trialComposition",) ##13
 #eingabe.show()
 
-# Abbruch falls Cancel gedrückt wurde
+#L wenn Gui-Eingabe fertig quit Fenster
 if init.gui.guiInput.OK == False:
     init.gui.core.quit()
 
@@ -153,7 +153,9 @@ if init.gui.guiInput.OK == False:
 
 ### Array erstellen, in das gespeichert wird
 data = []
-
+#
+#event.globalKeys.clear()
+#event.globalKeys.add(key='q', func=core.quit, name='shutdown')
 
 ### Fenster in dem tatsächliches Experiment dargestellt wird
 window = visual.Window(
@@ -162,9 +164,13 @@ window = visual.Window(
         size=[1366,768],
         units='pix')
 started = True
-### Handler für Rauschmatrix
 
+#L erstellt Objekt der klasse RandomMatrix, die Rauschmatrix prozuieren kann
 randomHandler = RandomMatrix()
+#L initialisiert einmalig die notwendigen Variablen
+randomHandler.__init__()
+#L aktuallisiert die Rauschbilder mit aktueller Zeichenintensität
+randomHandler.signalIntensityRefresh()
 
 
 #randomHandler.__init__(gui)
@@ -181,18 +187,26 @@ randomHandler = RandomMatrix()
 #clock für bild und voted für zurück setzen
 
 
-flipOn = True
-easyBlock = True
-trialWork = True
 
+#L for blocking in Trial
+easyBlock = True
+#L intern variable to count trialblocks
 trialRounds = 0
+#L intern variable to count the trial
 trial = 0
+#L newSignalIntensity is a intern variable wich will be in- and decreased
+#L initilized with the signal intensity from the Gui
+newSignalIntensity = init.signalIntensity
+#L saves the count of correct answers in one try 
 save = []
+
 #0 keine Antwort
 #1 HIT (yesTrue)
 #2 FALSE ALARM (yesFalse)
 #3 CORRECT REJECTION (noTrue)
 #4 MISS (noFalse)
+
+#L response of the testperson, initialized with 0 because that is not answered
 responseTestPerson = 0
 
 #fixiDone = False
@@ -206,35 +220,21 @@ responseTestPerson = 0
 #feedbackDone = False
 #pauseDone = False
 
-
+#L if you are at the end of the trialarray rested = True (Überarbeiten)
 reset = False
-
+#L variable to be sure you execute the clearfunction just one time 
 clearBeforePress = True
 
-### Zufällig True oder False, entscheidet später ob Stimulus gezeichnet wird oder nicht
-stimOrNot = bool(random.getrandbits(1))
-stimOrNot2 = not stimOrNot
 
-## Initialisieren mit Gui
-#init.trialComposition = [1,2,3,4,5,6]
-print(init.trialComposition)
+#L initialize an object of the TrialFunction class, wich has functions to evelute the testpersons answerr
 trialFkt = TrialFunctions()
-### Variablen Initialisieren
-# wenn neues Rauschen ausgewertet (1), wenn new Picture wieder frei gegeben (0)
-newPicture = 0
-answerNotPressed = 0
-nextOne = 0
-# Counter momentan ungenutzt !!!
-counterNV = 0
-counterV = 0
-stringCountV = "Count V: %s"%(counterV)
-stringCountNV = "Count NV: %s"%(counterNV)
+
 
 
 ### Instruktionen für Keys // Problem Bildschirmgröße
-keyInst = visual.TextStim(window,
-                            'Y -> Stimulus vorhanden \nN -> Stimulus nicht vorhanden \nQ -> Experiment beenden',
-                            pos =[-400, 300])
+#keyInst = visual.TextStim(window,
+#                            'Y -> Stimulus vorhanden \nN -> Stimulus nicht vorhanden \nQ -> Experiment beenden',
+#                            pos =[-400, 300])
 
 ### Instruktionen zu Beginn eines Trials
 trialInst1 = visual.TextStim(window,
@@ -243,20 +243,20 @@ trialInst1 = visual.TextStim(window,
 ### Instruktionen zu Beginn eines Trials
 trialInst2 = visual.TextStim(window,
                             'Es werden Ihnen nun verschiedene Stimuli präsentiert. \n\nEinige Stimuli bestehen nur aus dem Störrauschen, andere bestehen aus dem Rauschen und dem zu entdeckenden Signal. \n\nIn der Mitte des Bildschirms wird Ihnen nun ein Stimulus mit Signal als Beispiel gezeigt. \n\nWenn Sie das Signal während des Experiments entdecken, drücken Sie bitte "y". \n\nAls nächstes wird Ihnen nur das Störrauschen allein als Beispiel angezeigt. \n \n[Weiter] ',
-                            pos =[500, 0])
+                            pos =[400, 0])
 ### Instruktionen zu Beginn eines Trials
 trialInst3 = visual.TextStim(window,
                             'In der Mitte des Bildschirms wird Ihnen nun nur das Störrauschen angezeigt.\n\nFalls Sie gleich nur das Rauschen wahrnehmen sollten, drücken Sie bitte "n". \n\n[Weiter]',
-                            pos =[500,0])
+                            pos =[400,0])
 ### Instruktionen zu Beginn eines Trials
 trialInst4 = visual.TextStim(window,
                             'Gleich startet das Experiment. \n\nZunächst wird Ihnen in der Mitte des Bildschirms ein Fixationskreuz angezeigt. Genau dort erscheint wenig später für kurze Zeit der Stimulus. \n\nNachdem der Stimulus wieder ausgeblendet wurde, startet die Antwortperiode. \n\nZur Erinnerung: \n\nFalls Sie in dem Stimulus das Signal erkennen, drücken Sie bitte "y". \n\nFalls Sie das Signal NICHT entdecken können, drücken Sie "n". \n\nNach Ihrer Entscheidung erhalten Sie ein kurzes Feedback, ob ihre Wahl korrekt war: Ein grünes Kreuz bei richtiger Antwort und ein rotes bei einer falschen. \n\nDanach erscheint wieder das Fixationskreuz und ein neuer Durchgang startet. \n\nWenn Sie nun auf "w" drücken startet das Experiment. Wir empfehlen, Ihre Finger schon auf die entsprechenden Tasten zu legen. \n\n[Weiter]',
-                            pos =[0, 100])
+                            pos =[0, 0])
 
 ### Maus erzeugen (momentan ungenutzt)
 keyInst = event.Mouse(win = window)
 
-## farbe in string
+#L function that creats a fixation cross in diffrent colours (var farbe have to be type string)
 def newFixi(farbe):
 ### Positives Feedback (Richtige Antwort)
 ### Negatives Feedback (Falsche Antwort)
@@ -276,7 +276,7 @@ def newFixi(farbe):
 #        pos=[0,0]
         )
     return fixationskreuz
-# Rot/Grün/Schwarz Fixationskreuz
+#L initilize fixation cross in red, green, and black colour
 fixiGreen  = newFixi("lime")
 fixiRed   = newFixi("red")
 fixiBlack = newFixi("black")
@@ -284,6 +284,7 @@ fixiBlack = newFixi("black")
 
 ### Errechnen der Matrix mit Zufallszahlenfunktion
 def newRand(stim):
+    
     if (stim == True and init.randomContrast == True):
         newMatrix =randomHandler.buildMatrixWithRandomSignal(randomHandler.inverseAMatrix)
     elif (stim == True):
@@ -307,9 +308,13 @@ def newRand(stim):
 
     return image
 
+### Zufällig True oder False, entscheidet später ob Stimulus gezeichnet wird oder nicht
+stimOrNot = bool(random.getrandbits(1))
+stimOrNot2 = not stimOrNot
+
 ### Ausführen der Zufallszahlenfunktion
 rauschBild = newRand(stimOrNot)
-rauschBild2= newRand(stimOrNot2)
+#rauschBild2= newRand(stimOrNot2)
 
 
 
@@ -358,21 +363,37 @@ if trial == 0:
 
 
     core.wait(0.5)
-while trialRounds < 4:
+
+#L start of the trial, as long as trialRounds < init.trialRounds (gui)
+while trialRounds < init.trialRounds:
+    #L if maximum trials are reached, 
+    #L do the between trialblock-stuff 
+    #L set trial = 0 and start the next trialblock
     if trial==init.numberOfTrials:
         D = np.array(data)
         data = []
         correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
         print("%i/%i, %g%%"%(correct,init.numberOfTrials,correct/init.numberOfTrials*100))
         save.insert(trialRounds,correct)
-        trialRounds = trialRounds +1
-        print(save)
+        #L if contrastDown is True, refresh the newSignalIntesity
+        if (init.contrastDown == True):
+            trialRounds = trialRounds +1
+        
+            newSignalIntensity= newSignalIntensity - init.contrastSteps
+            randomHandler.gu.signalIntensity = newSignalIntensity
+            randomHandler.signalIntensityRefresh()
+#        
         trial = 0
-    while trial < init.numberOfTrials and trialRounds < 4: ##Variables.trials
+        #L whait 1 second to indicate trialblock is over
+        core.wait(1)
+    
+    #L local counter-variables are smaler than init-variables 
+    #L so continue the loop
+    while trial < init.numberOfTrials and trialRounds < init.trialRounds: ##Variables.trials
         reset = False
         trialClock= core.Clock()
         
-            
+        #L reset block while loop if maximum length of trialComposition-array is reached, until everything is reseted
         while reset == False:
     
     #            print(i)
@@ -384,8 +405,6 @@ while trialRounds < 4:
                 trial = trial+1
                 reset = True
                 i=0
-                stimOrNot = bool(random.getrandbits(1))
-                rauschBild= newRand(stimOrNot)
                 easyBlock = True
                 ##Datenspeicherung
                 data.append([responseTestPerson])
@@ -397,17 +416,20 @@ while trialRounds < 4:
                         delimiter="\t"
                         #header="A,B"
                         )
+            #L if maximum length of trialComposition is not reached, continue with the components 
             else:
     
     
-                ##Fixationskreuz
+                ##Fixationskreuz##
+                #L if trialComposition at index i = 1 than do the fixation cross
                 if init.trialComposition [i]== 1 and i +1 < len(init.trialComposition):
                     fixiBlack.setAutoDraw(True)
-                    ##EInmaliges ausführen
+                    #L execute just one time and block until reseted = False (reseted = False after evry component)
                     if not reseted:
+                        #L initialize remaining frames (time)
                         frameRemains = trialClock.getTime() + init.timeFixationCross - window.monitorFramePeriod * 0.75
                         reseted = True
-    
+                    #if time for component is over set increase i, set reseted = False and stop drawing
                     if trialClock.getTime() > frameRemains:
                         fixiBlack.setAutoDraw(False)
                         i= i+1
@@ -423,14 +445,16 @@ while trialRounds < 4:
     
                         i=i+1
                         reseted = False
-                ##Stimulus Yes No Task
+                ##Stimulus Yes No Task & and first of the 2 Stimuli in 2IFC
                 if init.trialComposition [i]== 3 and i + 1< len(init.trialComposition):
-    
-                    rauschBild.setAutoDraw(True)
+                    
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75
                         reseted = True
-    
+                        stimOrNot = bool(random.getrandbits(1))
+                        rauschBild= newRand(stimOrNot)
+                        rauschBild.setAutoDraw(True) 
+                        
                     if trialClock.getTime() > frameRemains:
                         rauschBild.setAutoDraw(False)
                         i= i+1
@@ -450,9 +474,13 @@ while trialRounds < 4:
     
                     ##Event No
                     if event.getKeys(keyList=["n"]):
+                        #L eveluate the answer of the tested person and give back 0-5 
+                        #(no answer, hit, miss, correct rejection, false alarm)
                         responseTestPerson = trialFkt.getAnswerYesNo(False, stimOrNot)
+                        #L antwortZeit zum ermitteln von dauer ... funktioniert noch nicht 
                         antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
+                        #unlock reseted and clearBeforePress for next component
                         reseted = False
                         clearBeforePress = True
     
@@ -470,14 +498,15 @@ while trialRounds < 4:
                         i=i+1
                         reseted = False
     
-                ##Feedback
+                ##Feedback 
+                #L is used for assigning the response in Yes/No, 2IFC, 4IFC
                 if init.trialComposition[i]== 5 and i + 1< len(init.trialComposition):
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeFeedback - window.monitorFramePeriod * 0.75
                         reseted = True
     
                     print(responseTestPerson)
-    
+                    #L assign responseTestPerson and fixation cross in the right colour
                     if responseTestPerson == 0 :
                         colourFeedback = fixiBlack
     
@@ -486,9 +515,11 @@ while trialRounds < 4:
     
                     if responseTestPerson == 2 or responseTestPerson == 4 :
                         colourFeedback = fixiRed
-    
+                    
+                    #L draw the fixation cross in evaluated colour
                     colourFeedback.setAutoDraw(True)
     
+                    #L time is over, set everything back to be ready for the next trialcomponent
                     if trialClock.getTime() > frameRemains:
                         colourFeedback.setAutoDraw(False)
                         i= i+1
@@ -504,22 +535,22 @@ while trialRounds < 4:
                     if trialClock.getTime() > frameRemains:
                         i = i+1
                         reseted = False
-    
+                
+                #L close the programm if escape or q is pressed
                 if event.getKeys(keyList=["escape"])or event.getKeys(keyList=["q"]):
                     window.close()
     
                 
-                #### Stimulus 2IFC nimmt stim und macht -stim (first 3 than 7)
+                ####L Stimulus 2IFC second of the two stimuli in 2IFC
               
                 if init.trialComposition [i]== 7 and i +1 < len(init.trialComposition):
                     
                     
-                    
-                    
                     if not reseted:
+                        #L the second stimulus should be the negation of the first stimulus
                         stimOrNot2 = not stimOrNot
-                            
-                        rauschBild= newRand(stimOrNot)
+                        #L create the new matrix and draw it
+                        rauschBild= newRand(stimOrNot2)
                         rauschBild.setAutoDraw(True)
                         
                         frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75
@@ -530,9 +561,11 @@ while trialRounds < 4:
                         rauschBild.setAutoDraw(False)
                         i = i+1
                         reseted = False
-                    ### Auswertung 2IFC ##
+                        
+                        
+                ### Auswertung 2IFC ##
                 if init.trialComposition [i]== 8 and i +1 < len(init.trialComposition):
-                    
+                    #one time routine
                     if not reseted:
                         frameRemains = trialClock.getTime() + init.timeAnswer - window.monitorFramePeriod * 0.75
                         reseted = True
@@ -544,7 +577,7 @@ while trialRounds < 4:
     
                     ##Event 1
                     if event.getKeys(keyList=["1"]):
-                        responseTestPerson = trialFkt.getAnswer2IFC(1, stimOrNot2)
+                        responseTestPerson = trialFkt.getAnswer2IFC(1, stimOrNot)
                         antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
                         reseted = False
@@ -552,19 +585,21 @@ while trialRounds < 4:
     
                     ##Event 2
                     if event.getKeys(keyList=["2"]):
-                        responseTestPerson = trialFkt.getAnswer2IFC(2, stimOrNot)
+                        responseTestPerson = trialFkt.getAnswer2IFC(2, stimOrNot2)
                         antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
                         clearBeforePress = True
                         reseted = False
-    
+                    
+                    #L if answering time is over, assign answer 0 (anwortZeit not implemented)
                     if trialClock.getTime() > frameRemains:
                         responseTestPerson = 0
                         antwortZeit = 9999
                         i=i+1
-                        reseted = False    
-                 #### Stimulus 4IFC nimmt stim und macht -stim (first 3 than 7)
-#                print(i)
+                        reseted = False
+                        
+                 ####L Stimulus 4IFC 
+#               
                 if init.trialComposition [i]== 9 and i +1 < len(init.trialComposition):
                     
                     
@@ -575,19 +610,25 @@ while trialRounds < 4:
                         
                         
                         
-                        
+                        #L if trialComponents max length is reached set easyBlock = True
+                        #L this condition is executed only one time while run through the array
                         if easyBlock == True :
+                            #L a random number between 1 and 4, wich presents the stimulus 
                             signalWithStim = random.randint(1,4)
                             ##signalNumber = zählvariable 
                             signalNumber=1
                             ##Trialsperre aktiviert
                             easyBlock = False
+                        #L if the local countervariable signalWithStim is equal 
+                        #L the random Number between 1-4 draw a matrix with stimulus
                         if signalWithStim == signalNumber :
                             rauschBild= newRand(True)
-                        
+                        #L else without stimulus
                         else :
                             rauschBild= newRand(False)
+                        
                         rauschBild.setAutoDraw(True)
+                        #L increase the counter
                         signalNumber = signalNumber +1
                         frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75
                         ##reseted 
@@ -602,7 +643,7 @@ while trialRounds < 4:
                         
                         
                     ###### Auswertung 4IFC ###
-                    
+                #L evaluate the answer of the tested person
                 if init.trialComposition [i]== 10 and i +1 < len(init.trialComposition):
                     
                     if not reseted:
@@ -616,6 +657,7 @@ while trialRounds < 4:
     
                     ##Event 1
                     if event.getKeys(keyList=["1"]):
+                        #L evaluate respone with a function and given parametern
                         responseTestPerson =  trialFkt.getAnswer4IFC(1,signalWithStim)
                         antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                         i=i+1
@@ -664,6 +706,8 @@ while trialRounds < 4:
 #    save.insert(trialRounds,correct)
 #    trialRounds = trialRounds +1
 #    print(save)
+                
+#L show the results with a graph in the console 
 plt.plot(save)
 plt.show()
 window.close()
