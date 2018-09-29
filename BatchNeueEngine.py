@@ -111,7 +111,6 @@ data = []
 
 
 
-
 def drawQuit(win):
     '''
     where "win" has to be a visual.Window-type
@@ -120,7 +119,6 @@ def drawQuit(win):
     
     this function draws "Beenden" on the screen and closes the viusal.Window "win"
     '''
-    win.flip()
     quitInst.draw()
     win.flip()
     core.wait(1)
@@ -155,7 +153,7 @@ if(init.initializeFailed == True):
 randomHandler = RandomMatrix()
 
 #L hand the object "init", with the initialized variables, to the object "randomHandler"
-randomHandler.giveRandomHandlerVar(init) 
+randomHandler.give_image_factory_var(init) 
 
 #L initialize the parameter wich are only needed one time
 randomHandler.init()
@@ -280,9 +278,9 @@ def newRand(stim):
     it returns an "image" type visual.ImageStim
     '''
     if (stim == True and init.randomContrast == True):
-        newMatrix =randomHandler.buildMatrixWithRandomSignal(randomHandler.inverseAMatrix)
+        newMatrix =randomHandler.buildMatrixWithRandomSignal()
     elif (stim == True):
-        newMatrix =randomHandler.buildMatrixWithSignal(randomHandler.inverseAMatrix)
+        newMatrix =randomHandler.buildMatrixWithSignal()
     else:
         newMatrix =randomHandler.buildMatrixWithoutSignal()
     image = visual.ImageStim(
@@ -317,7 +315,7 @@ rauschBildKonstant = newRand(True)
 
 #L to save the starting signalIntensity, initialized just one time at the start of the experiment 
 #L because init.signalIntensity changes over time (if contrast steps down are activated in the gui)
-#constantValue = init.signalIntensity
+constantValue = init.signalIntensity
 
 #L for blocking in trial 
 easyBlock = True
@@ -992,6 +990,7 @@ while trialRounds < init.trialRounds:
                     blocked = False
             
             ####
+            
             window.flip()
 
                 

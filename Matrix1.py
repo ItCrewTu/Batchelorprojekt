@@ -13,9 +13,9 @@ Created on Thu May 31 17:03:08 2018
 
 Liste enthält alle geänderten Namen dieser Klasse in alphabetischer Reihenfolge:
 
-scriptDir = script_dir
-relPath = rel_path
-imagePath = bildpfad
+script_dir = script_dir
+rel_path = rel_path
+image_path = bildpfad
 image = bild
 noiseSignalMatrix = rauschAMatrix
 randomContrast = randomKontrast
@@ -54,7 +54,7 @@ from StoreClass import VarStore
 
 class RandomMatrix:
     
-    def giveRandomHandlerVar(self, store):
+    def give_image_factory_var(self, store):
         '''
         where "store" has to be a VarStore-object
         
@@ -62,47 +62,51 @@ class RandomMatrix:
         
         this function has no output
         '''
-        self.gu = store
+        self.variables = store
         
-    #L initilize the "static" variables 
+    #L initialize the "static" variables 
     def init(self):
+############ initialize
         '''
         this function has no input and output
         
         it initilize the "static" variables (wich doen't change over time)
         '''
-        #L script directery for loading the picture below
-        scriptDir = os.path.dirname(__file__) #<-- absolute dir the script is in
+        #L script directory for loading the picture below
+        script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
         
-        #L assign the picked pixesize from the gui to the variable "relPath"
-        if self.gu.stimulusSizePixels == "64x64":
-            relPath = "Ababa - Kopie.jpg"
-        if self.gu.stimulusSizePixels == "128x128":  
-            relPath = "Ababa 128.jpg"
-        if self.gu.stimulusSizePixels == "256x256":
-            relPath = "Ababa.jpg"
+        #L assign the picked pixesize from the gui to the variable "rel_path"
+        if self.variables.stimulusSizePixels == "64x64":
+            rel_path = "Ababa - Kopie.jpg"
+        if self.variables.stimulusSizePixels == "128x128":  
+            rel_path = "Ababa 128.jpg"
+        if self.variables.stimulusSizePixels == "256x256":
+            rel_path = "Ababa.jpg"
         
         #L create the datapath and load the image in "img"
         #L the image needs a white background (fill_value = 255)!!
-        imagePath = os.path.join(scriptDir, relPath)
-        img = Image.open(imagePath)
+        image_path = os.path.join(script_dir, rel_path)
+        #L img holds the loadet picture
+        img = Image.open(image_path)
         
         #L get the pixelvalues out of the image (img) and save it in "pixels"
         pixels = np.asarray(img)
+        
+        #L needet to work with the pixelmatrix ("pixels")
+        pixels.setflags(write=1)
         
         #L save the pixel width  
         self.pixelwidth = len(pixels)
         
         #L create a matrix as big as pixelwidth x pixelwidth full of fill_value = 255 
         #L depht of the matrix is 3 to convert it later into an image-type
-        whiteMatrix = np.full((self.pixelwidth,self.pixelwidth,3), fill_value = 255, dtype=np.uint8)
+        white_matrix = np.full((self.pixelwidth,self.pixelwidth,3), fill_value = 255, dtype=np.uint8)
         
-        #L needet to work with the pixelmatrix ("pixels")
-        pixels.setflags(write=1)
+
         
-        #L "inverseAMatrix" is calculated by the "whiteMatrix" - "pixels"
+        #L "inverseAMatrix" is calculated by the "white_matrix" - "pixels"
         #L where the A is are now values >= 1, everywhere else (where the background was) 0 
-        self.inverseAMatrix = whiteMatrix - pixels
+        self.inverseAMatrix = white_matrix - pixels
 
         #L "indizes" save every index where the (colour-)value is bigger or equal 1  
         #L "indizes" is built up lik [[x-axis],[y-axis]]
@@ -114,8 +118,7 @@ class RandomMatrix:
         #L indizes of the y-axis
         self.indizesY = self.indizes[1]
         
-#    def signalIntensityConstantStimuli(self):
-#        self.gu.signalIntensity = np.random.normal(self.gu.meanNoise, self.gu.standardDeviationNoise)
+
         
     #L if the signal intensity is changed start this function to create a new Matrix with given Intensity
     def signalIntensityRefresh(self):
@@ -133,55 +136,59 @@ class RandomMatrix:
         while (i < len(self.indizes[0])):
             #L each pixel wich represent the a, now get a new signalIntensity
             #L "inverseAMatrix" needs to save the "signalIntensity" in all 3 levels (depht)
-            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],0]= self.gu.signalIntensity
-            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],1]= self.gu.signalIntensity
-            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],2]= self.gu.signalIntensity
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],0]= self.variables.signalIntensity
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],1]= self.variables.signalIntensity
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],2]= self.variables.signalIntensity
             
             #L if all 3 levels of a pixel got the new "signalIntensity", increas the counter ("i")
             i= i+1
     
     
-    def buildMatrixWithSignal(self, inverseAMatrix):
+    def buildMatrixWithSignal(self):
         '''
         where "inverseAMatrix" is a arraytype with depht 3 ([x,y,depht])
         
-        this function creats an picture of a grey noise + a stimulus
+        this function creats a picture of a grey noise + a stimulus
         
-        this function retun a Image-type
+        this function retun an Image-type
         '''
         #L add Matrix with signal ("inverseAMatrix") to the Matrix with the noise 
         #L (wich is created by the function "buildMatrixWithoutSignal")
-        noiseSignalMatrix = (self.buildMatrixWithoutSignal())+ inverseAMatrix
+        noiseSignalMatrix = (self.buildMatrixWithoutSignal())+ self.inverseAMatrix
     
-    #        noiseSignalMatrix = noiseSignalMatrix/(noiseSignalMatrix.max()/255,0)
-    #        noiseSignalMatrix.max(255)
-            #print(inverseAMatrix)
+        #L make an image out of the array
         self.image = Image.fromarray(noiseSignalMatrix)
         return self.image
 
 
-    def buildMatrixWithRandomSignal(self, inverseAMatrix):
+    def buildMatrixWithRandomSignal(self):
+        ### überarbeiten
         '''
         were "inverseAMatrix" is a arraytype with depht 3 ([x,y,depht])
         
-        this function create a random, gausian distributed, grey noise-picture
+        this function creates a picture of a grey noise + a stimulus with a random intensity
         
-        this function return a Image-type
+        this function return an Image-type
         '''
         
-        randomContrast= random.uniform(self.minContrast,self.maxContrast)
+        #L pick a random value between minContrast and maxContrast
+        randomContrast= random.uniform(1,9)
+        
+        #L initialize countervariable "i"
         i=0
-        while (i < len(RandomMatrix.indizes[0])):
-            inverseAMatrix[RandomMatrix.indizesX[i],RandomMatrix.indizesY[i],0]=randomContrast
-            inverseAMatrix[RandomMatrix.indizesX[i],RandomMatrix.indizesY[i],1]=randomContrast
-            inverseAMatrix[RandomMatrix.indizesX[i],RandomMatrix.indizesY[i],2]=randomContrast
+        
+        #L each index wich represents the A, gets a new value ("randomContrast")
+        while (i < len(self.indizes[0])):
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],0]=randomContrast
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],1]=randomContrast
+            self.inverseAMatrix[self.indizesX[i],self.indizesY[i],2]=randomContrast
             i= i+1
         
-        noiseSignalMatrix = (RandomMatrix().buildMatrixWithoutSignal())+ inverseAMatrix
+        #L add Matrix with signal ("inverseAMatrix") to the Matrix with the noise 
+        #L (wich is created by the function "buildMatrixWithoutSignal()")
+        noiseSignalMatrix = (self.buildMatrixWithoutSignal())+ self.inverseAMatrix
 
-#        noiseSignalMatrix = noiseSignalMatrix/(noiseSignalMatrix.max()/255,0)
-#        noiseSignalMatrix.max(255)
-        #print(inverseAMatrix)
+        #L make an image out of the array
         self.image = Image.fromarray(noiseSignalMatrix)
         return self.image
 
@@ -193,10 +200,10 @@ class RandomMatrix:
         
         this function create a random, gausian distributed, grey noise-picture
         
-        this function return a Image-type
+        this function return an Image-type
         '''
         #L initialize a random, gausian distributed matrix
-        Matrix = np.random.normal(self.gu.meanNoise, self.gu.standardDeviationNoise,[self.pixelwidth,self.pixelwidth])
+        Matrix = np.random.normal(self.variables.meanNoise, self.variables.standardDeviationNoise,[self.pixelwidth,self.pixelwidth])
         #L creats an empty matrix with "depht" 3
         Matrix3D = np.zeros((self.pixelwidth,self.pixelwidth,3), dtype=np.uint8)
         

@@ -10,10 +10,10 @@ Created on Wed Jul 18 10:44:38 2018
 
 class TrialFunctions:
     #L evaluate yes/no task
-    def getAnswerYesNo(self, keyYes, stimulus):
+    def getAnswerYesNo(self, key_yes, stimulus):
             
         '''
-        where "keyYes" and "stimulus" have to be a boolean
+        where "key_yes" and "stimulus" have to be a boolean
         
         this function evaluate the given answer of the tested person
         
@@ -21,20 +21,20 @@ class TrialFunctions:
         
         1 = Hit, 2 = False alarm, 3 = Correct rejection, 4 = Miss
         '''
-        #L Hit --> if "stimulus" was there (True) and answer was yes ("keyYes" == True)
-        if (stimulus == True and keyYes == True):
-            self.antwort = 1
-        #L False Alarm  --> if "stimulus" was not there (False) and answer was yes ("keyYes" == True)
-        if (stimulus == False and keyYes == True):
-            self.antwort = 2
-        #L Correct Rejection  --> if "stimulus" was not there (False) and answer was no ("keyYes" == False)
-        if (stimulus == False and keyYes == False):
-            self.antwort = 3
-        #L Miss --> if "stimulus" was there (True) and answer was no ("keyYes" == False)
-        if (stimulus == True and keyYes == False):
-            self.antwort = 4
+        #L Hit --> if "stimulus" was there (True) and answer was yes ("key_yes" == True)
+        if (stimulus == True and key_yes == True):
+            self.answer = 1
+        #L False Alarm  --> if "stimulus" was not there (False) and answer was yes ("key_yes" == True)
+        if (stimulus == False and key_yes == True):
+            self.answer = 2
+        #L Correct Rejection  --> if "stimulus" was not there (False) and answer was no ("key_yes" == False)
+        if (stimulus == False and key_yes == False):
+            self.answer = 3
+        #L Miss --> if "stimulus" was there (True) and answer was no ("key_yes" == False)
+        if (stimulus == True and key_yes == False):
+            self.answer = 4
 
-        return self.antwort
+        return self.answer
     
     
     #L evaluate 2 IFC task
@@ -48,36 +48,36 @@ class TrialFunctions:
         '''
         #L if there was a stimulus --> 1 (correct)
         if stimulus == True:
-            self.antwort = 1
+            self.answer = 1
         #L else in the choosed picture was no stimulus --> 2 (wrong)
         else:
-            self.antwort = 2
+            self.answer = 2
             
-        return self.antwort
+        return self.answer
     
     
     #L efaluate 4 IFC Task
-    def getAnswer4IFC (self ,keyAnswer, signalWithStim):
+    def getAnswer4IFC (self ,key_answer, signal_with_stim):
         '''
-        where "keyAnswer" and "signal" have to be a intiger
+        where "key_answer" and "signal" have to be a intiger
         
-        this function checks whether the choosed "keyAnswer" and "signalWithStim" are the same
+        this function checks whether the choosed "key_answer" and "signal_with_stim" are the same
         
         it returns 1 if the answer was correct, 2 if the answer was wrong 
         '''
         #if the tested person choosed the picture in wich the stimulus was --> 1
-        if (signalWithStim == keyAnswer):
-            self.antwort = 1   
-        #else signalWithStim != keyAnswer (person picked the wrong picture) --> 2
+        if (signal_with_stim == key_answer):
+            self.answer = 1   
+        #else signal_with_stim != key_answer (person picked the wrong picture) --> 2
         else :
-            self.antwort = 2
+            self.answer = 2
         
-        return self.antwort
+        return self.answer
     
 
-    def getAnswerConstantStimuli (self, key1or2, differenz, constantPos):
+    def getAnswerConstantStimuli (self, key_1_or_2, difference, constant_pos):
         '''
-        where "keyAnswer", "differenz" and "constantPos" have to be a intiger
+        where "key_1_or_2", "difference" and "constant_pos" have to be a intiger
         
         this function evaluate wich stimulus has the higher intensity
         
@@ -87,23 +87,23 @@ class TrialFunctions:
         '''
         
         #L if the "differernz" is greater than zero --> constant stimulus intensity is greater
-        if (differenz > 0):
-            #L "key1or2" and "constantPos" could be 1 or 2
+        if (difference > 0):
+            #L "key_1_or_2" and "constant_pos" could be 1 or 2
             #L if the choosed picture is the constant picture
-            if(key1or2 == constantPos):
-                self.antwort = 1
+            if(key_1_or_2 == constant_pos):
+                self.answer = 1
             #L else the choosed picture is the inconstant picture
             else:
-                self.antwort = 2
+                self.answer = 2
                 
         #L if the "differernz" is less than zero --> inconstant stimulus intensity is greater
-        if (differenz < 0):
+        if (difference < 0):
             #L if the choosed picture is the inconstant picture
-            if(key1or2 != constantPos):
-                self.antwort = 1
+            if(key_1_or_2 != constant_pos):
+                self.answer = 1
             #L else if the choosed picture is the constant picture
             else: 
-                self.antwort = 2
+                self.answer = 2
 
-        return self.antwort
+        return self.answer
 ##
