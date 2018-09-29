@@ -317,11 +317,7 @@ rauschBildKonstant = newRand(True)
 
 #L to save the starting signalIntensity, initialized just one time at the start of the experiment 
 #L because init.signalIntensity changes over time (if contrast steps down are activated in the gui)
-constantValue = init.signalIntensity
-
-#randomHandler.gu.signalIntensity = constantValue + 5
-#randomHandler.signalIntensityRefresh()
-#examplePicStim = newRand(True)
+#constantValue = init.signalIntensity
 
 #L for blocking in trial 
 easyBlock = True
@@ -573,7 +569,7 @@ while trialRounds < init.trialRounds:
                     blocked = False
 
 
-            ##MASK##
+                ##MASK##
             
             #L if trialComposition[i] == 2 than do the mask
             #L this component shows the background of the window for given time
@@ -591,7 +587,7 @@ while trialRounds < init.trialRounds:
                     blocked = False
                     
                     
-            ##STIMULUS YES/ NO TASK AND 1. STIMULUS 2IFC##
+                    ##STIMULUS YES/ NO TASK AND 1. STIMULUS 2IFC##
             
             #L if trialComposition[i] == 3 than do the Stimulus for yes/no task
             #L this component shows picture of (noise) or (noise + stimulus)
@@ -615,7 +611,7 @@ while trialRounds < init.trialRounds:
                     blocked = False
 
 
-            ##ANSWERPERIOD YES/NO TASK ##
+                ##ANSWERPERIOD YES/NO TASK ##
             
             #L if trialComposition[i] == 4 than do answerperiod of the yes/no task
             #L this component gets an input of "y" yes or "n" no
@@ -632,7 +628,7 @@ while trialRounds < init.trialRounds:
                 ##L Event No
                 if event.getKeys(keyList=["n"]):
                     #L "trialFkt.getAnswerYesNo() eveluate the answer of the tested person 
-                    #L and give back 1-5 (hit, miss, correct rejection, false alarm)
+                    #L and give back 1-4 (hit, miss, correct rejection, false alarm)
                     #L wich is saved in "responseTestPerson"
                     responseTestPerson = trialFkt.getAnswerYesNo(False, stimOrNot)
                     #L antwortZeit zum ermitteln von dauer ... funktioniert noch nicht 
@@ -756,7 +752,7 @@ while trialRounds < init.trialRounds:
                     #L if "1" is pressed than "trialFkt.getAnswer2IFC() eveluate the answer of the 
                     #L tested person and give back 1 or 2 (1 for correct and 2 for wrong)
                     #L which is saved in "responseTestPerson"
-                    responseTestPerson = trialFkt.getAnswer2IFC(1, stimOrNot)
+                    responseTestPerson = trialFkt.getAnswer2IFC(stimOrNot)
                     antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                     i=i+1
                     blocked = False
@@ -766,7 +762,7 @@ while trialRounds < init.trialRounds:
                     #L if "2" is pressed than "trialFkt.getAnswer2IFC() eveluate the answer of the 
                     #L tested person and give back 1 or 2 (1 for correct and 2 for wrong)
                     #L which is saved in "responseTestPerson"
-                    responseTestPerson = trialFkt.getAnswer2IFC(2, stimOrNot2)
+                    responseTestPerson = trialFkt.getAnswer2IFC(stimOrNot2)
                     antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                     i=i+1
                     blocked = False
@@ -925,45 +921,54 @@ while trialRounds < init.trialRounds:
                         randomHandler.signalIntensityRefresh()
                         #L create a picture (noise + stimulus) with updated intensity
                         rauschBild= newRand(True)
-                        #L negate the variable "firstOrSecondConstant" to execute next time
-                        #L the other stimulus
-#                        firstOrSecondConstant = not firstOrSecondConstant
                         
                     #L if firstOrSecondConstant != True --> draw the constant stimuli
                     else:
-                        #L update the randomHandler with the intensity of the constant stimului 
+                        #L update the signalIntensity constant stimului 
                         randomHandler.gu.signalIntensity = constantValue
                         randomHandler.signalIntensityRefresh()
                         #L create a picture (noise + stimulus) with updated intensity
                         rauschBild= newRand(True)
-                        
-#                        firstOrSecondConstant = not firstOrSecondConstant
-                        
-                    blocked = True    
+                    
+                    
                     frameRemains = trialClock.getTime() + init.timeStimulus - window.monitorFramePeriod * 0.75    
                     rauschBild.setAutoDraw(True) 
+                    #L negate the variable "firstOrSecondConstant" to execute next time
+                    #L the other stimulus
                     firstOrSecondConstant = not firstOrSecondConstant
-                    
+                    #L blocks the codesegment above till component is done
+                    blocked = True
+                
+                #L draw the picture till time is over, than continue with next component
+                #L at index trialComposition[i]
                 if trialClock.getTime() > frameRemains:
                     rauschBild.setAutoDraw(False)
                     i= i+1
                     blocked = False#
                     
-             ### Auswertung Constant Stimuli
+            ##EVALUATION CONSTANT STIMULI##
              
+            #L if trialComposition[i] == 12 start the evaluation for constant stimuli
+            #L this component evaluates wether the tested person has given a right answer
+            #L --> "responseTestPerson" = 1 or a wrong answer --> "responseTestPerson" = 2
             if i < len(init.trialComposition) and init.trialComposition [i]== 12:
-                #one time routine
+                
+                #L initilize routine for trial-component
                 if not blocked:
                     frameRemains = trialClock.getTime() + init.timeAnswer - window.monitorFramePeriod * 0.75
                     blocked = True
-                    #differenz = +1 if konstant value is bigger -1 if inconstant is bigger
+                    #L @differenz is used to decide wether constant or inconstant intensity is bigger
+                    #L differenz > 0 if constant stimulus intensity is bigger 
+                    #L differenz < 0 if inconstant stimulus intensity is bigger
                     differenz = constantValue - inconstantStimuli
-#                    print(differenz)
                     event.clearEvents()
 
 
                 ##Event 1
                 if event.getKeys(keyList=["1"]):
+                    #L if "1" is pressed than "trialFkt.getAnswerConstantStimuli()" eveluate
+                    #L the answer of the tested person and give back 1 or 2 (1 for correct 
+                    #L and 2 for wrong), which is saved in "responseTestPerson"
                     responseTestPerson = trialFkt.getAnswerConstantStimuli(1, differenz, constantPos)
                     antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                     i=i+1
@@ -971,12 +976,15 @@ while trialRounds < init.trialRounds:
 
                 ##Event 2
                 if event.getKeys(keyList=["2"]):
+                    #L if "2" is pressed than "trialFkt.getAnswerConstantStimuli()" eveluate
+                    #L the answer of the tested person and give back 1 or 2 (1 for correct 
+                    #L and 2 for wrong), which is saved in "responseTestPerson"
                     responseTestPerson = trialFkt.getAnswerConstantStimuli(2, differenz, constantPos)
                     antwortZeit = (init.timeAnswer - window.monitorFramePeriod * 0.75) - (frameRemains - trialClock.getTime())
                     i=i+1
                     blocked = False
                 
-                #L if answering time is over, assign answer 0 (anwortZeit not implemented)
+                #L if answering time is over, assign answer 0 to "responseTestPerson"
                 if trialClock.getTime() > frameRemains:
                     responseTestPerson = 0
                     antwortZeit = 9999
@@ -985,16 +993,7 @@ while trialRounds < init.trialRounds:
             
             ####
             window.flip()
-    
-    
-    
-#    print(data)
-#    D = np.array(data)
-#    correct = np.sum(np.logical_or(D[:,0]==1, D[:,0]==3))
-#    print("%i/%i, %g%%"%(correct,init.numberOfTrials,correct/init.numberOfTrials*100))
-#    save.insert(trialRounds,correct)
-#    trialRounds = trialRounds +1
-#    print(save)
+
                 
 #L show the results with a graph in the console 
 print(save)
