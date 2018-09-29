@@ -44,10 +44,30 @@ class TrialFunctions:
     #L efaluate 4 IFC Task
     def getAnswer4IFC (self ,keyAnswer, signalWithStim):
         if (signalWithStim == keyAnswer):
-            self.antwort = 1
+            self.antwort = 1    
         else :
             self.antwort = 2
         
         return self.antwort
+    
 
+    def getAnswerConstantStimuli (self, keyAnswer, differenz, constantPos):
+        #constant is bigger
+        if (differenz > 0):
+            if(keyAnswer == constantPos):
+                self.antwort = 1
+            else:
+                self.antwort = 2
+        #constant is smaler
+        if (differenz < 0):
+            if(keyAnswer != constantPos):
+                self.antwort = 1
+            else: 
+                self.antwort = 2
+        print(keyAnswer)
+        print(differenz)
+        print(constantPos)
+        print(self.antwort)
+        print("    ")
+        return self.antwort
 ##

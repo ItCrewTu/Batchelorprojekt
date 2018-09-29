@@ -47,27 +47,30 @@ import PIL
 import numpy as np
 import os
 import random
+from psychopy import core
 from PIL import Image
 from Variablen import Variables
 from StoreClass import VarStore
 
 class RandomMatrix:
-
+    
+    def giveRandomHandlerVar(self, init):
+        self.gu = init
     #L initilize the "static" variables (just one time needed)
-    def __init__(self):
+    def init(self):
     
         #L creates an instance of VarStore to have acces to the parameters in the class
-        self.gu = VarStore()
+#        self.gu = VarStore()
     
         print(self.gu.experimentType)    
         scriptDir = os.path.dirname(__file__) #<-- absolute dir the script is in
         
         #L assign the picked pixesize to the variable relPath
-        if self.gu.stimulusSizePixels == "32x32":
+        if self.gu.stimulusSizePixels == "64x64":
             relPath = "Ababa - Kopie.jpg"
-        if self.gu.stimulusSizePixels == "64x64":  
+        if self.gu.stimulusSizePixels == "128x128":  
             relPath = "Ababa 128.jpg"
-        if self.gu.stimulusSizePixels == "128x128":
+        if self.gu.stimulusSizePixels == "256x256":
             relPath = "Ababa.jpg"
     #    relPath = "Ababa.jpg"
         imagePath = os.path.join(scriptDir, relPath)
@@ -96,6 +99,9 @@ class RandomMatrix:
         #L indizes of the y-axis
         self.indizesY = self.indizes[1]
         
+    def signalIntensityConstantStimuli(self):
+        self.gu.signalIntensity = np.random.normal(self.gu.meanNoise, self.gu.standardDeviationNoise)
+        
     #if the signal intensity is changed start this function to create a new random Matrix with give Intensity
     def signalIntensityRefresh(self):
         i=0
@@ -112,7 +118,7 @@ class RandomMatrix:
     
     def buildMatrixWithSignal(self, inverseAMatrix):
     
-        noiseSignalMatrix = (RandomMatrix().buildMatrixWithoutSignal())+ inverseAMatrix
+        noiseSignalMatrix = (self.buildMatrixWithoutSignal())+ inverseAMatrix
     
     #        noiseSignalMatrix = noiseSignalMatrix/(noiseSignalMatrix.max()/255,0)
     #        noiseSignalMatrix.max(255)
