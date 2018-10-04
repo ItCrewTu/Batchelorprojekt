@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jun 29 13:11:09 2018
+
+@author: Leon
+"""
+
 from __future__ import unicode_literals, division, print_function
 
 # modules aus PsychoPy importieren
@@ -180,8 +187,8 @@ if stimOrNot == False:
                 
 image_Zeichnung2= newRand(stimOrNot2)
 
-
-
+frameN = -1
+frameStart = 0
 
 
             ### Schleife mit Instruktionen die in jedem Frame ausgeführt werden 
@@ -199,25 +206,27 @@ if state == "Yes/No Task":
         zurueckgesetzt = False
         trialClock= core.Clock()
         while zurueckgesetzt == False:
-            
+            frameN=frameN+1
     
             
             ## Fixationskreuz wenn nicht aktiviert übersprungen 
     
             if var.fixationskreuz == 0 and not fixiDone:
-                fixiDone = True
                 
-            if trialClock.getTime() < var.fixationskreuz and not fixiDone:
+                fixiDone = True
+                frameN = -1
+                
+            if frameN < var.fixationskreuz and not fixiDone:
                         
                 fixiBlack.setAutoDraw(True)
         
                     
-            if trialClock.getTime() >= var.fixationskreuz and not fixiDone: 
+            if frameN >= var.fixationskreuz and not fixiDone: 
                 
                 trialClock.reset()
                 fixiBlack.setAutoDraw(False)
                 fixiDone = True
-            
+                frameN = -1
             
             
             
@@ -421,8 +430,8 @@ if state == "2IFC":
         trialClock= core.Clock()
         
         while zurueckgesetzt == False:
-            print(fenster.monitorFramePeriod)
-            print(trial)
+            
+    
             
             ## Fixationskreuz wenn nicht aktiviert übersprungen 
     
@@ -616,7 +625,7 @@ if state == "2IFC":
                 
                 
             ##Pause 
-            if var.maske == 0 and fixiDone and not maskeDone:
+            if var.maske == 0:
                 maske4Done = True
             
         #    if trialClock.getTime() < var.maske and fixiDone and not maskeDone:
