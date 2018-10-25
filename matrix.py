@@ -16,6 +16,7 @@ class BuildMatrix:
     provides all operations to create an image for a signal detection task
 
     '''
+    
 
     def give_image_factory_var(self, store):
         '''
@@ -112,11 +113,12 @@ class BuildMatrix:
             self.inverse_stim_matrix[self.indices_x[i],
                                      self.indices_y[i],
                                      2] = self.variables.signal_intensity
-
+            
             # if all 3 levels of a pixel got the new "signal_intensity",
             # increase the counter ("i")
             i = i + 1
-
+      
+        
     def build_matrix_with_signal(self):
         '''
         has no input
@@ -130,10 +132,9 @@ class BuildMatrix:
         # (which is created by the function "build_matrix_without_signal")
         noise_signal_matrix = (
             self.build_matrix_without_signal()) + self.inverse_stim_matrix
-
-        # make an image out of the array
-        self.image = Image.fromarray(noise_signal_matrix)
-        return self.image
+        np.round_(noise_signal_matrix, decimals=0)
+        
+        return noise_signal_matrix
 
     def build_matrix_with_random_signal(self):
         '''
@@ -166,9 +167,7 @@ class BuildMatrix:
         noise_signal_matrix = (
             self.build_matrix_without_signal()) + self.inverse_stim_matrix
 
-        # make an image out of the array
-        self.image = Image.fromarray(noise_signal_matrix)
-        return self.image
+        return noise_signal_matrix
 
     def build_matrix_without_signal(self):
         '''
@@ -183,7 +182,6 @@ class BuildMatrix:
         noise_matrix = np.random.normal(
             self.variables.mean_noise, self.variables.standard_deviation_noise, [
                 self.pixelwidth, self.pixelwidth])
-
         # creates an empty noise_matrix with "depth" 3
         noise_matrix_3d = np.zeros(
             (self.pixelwidth, self.pixelwidth, 3), dtype=np.uint8)
@@ -195,6 +193,7 @@ class BuildMatrix:
         noise_matrix_3d[:, :, 1] = noise_matrix[:, :]
         noise_matrix_3d[:, :, 2] = noise_matrix[:, :]
 
-        # make an image out of "noise_matrix_3d"
-        self.image = Image.fromarray(noise_matrix_3d)
-        return self.image
+        
+
+        
+        return noise_matrix_3d

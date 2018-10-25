@@ -3,8 +3,10 @@
 stores all the input variables from the gui so other classes can acces it
 
 """
+from __future__ import unicode_literals, division, print_function
 import os
 import sys
+
 from gui import StateCheckIn
 
 
@@ -14,11 +16,14 @@ class VarStore:
 
     """
 
+
     # initialize the VarStore Object (just needed once)
     def init(self):
         # create a StateCheckIn object (gui)
         self.gui = StateCheckIn()
         self.gui.check_in_name_and_type()
+        self.screensize_x = self.gui.guiscreensize_x
+        self.screensize_y = self.gui.guiscreensize_y
         ###name of the object###
 
         if not self.gui.gui_input.OK:
@@ -83,7 +88,7 @@ class VarStore:
         self.decrease_intensity = self.gui.gui_input_var.data[13]
         # steps * trialblock have to be less than signal_intensity
         self.intensity_steps = self.within_range(
-            self.gui.gui_input_var.data[14], 1, 10)
+            self.gui.gui_input_var.data[14], 0.1, 10)
         if (self.intensity_steps * self.trial_blocks >
                 self.signal_intensity and self.decrease_intensity):
             self.initialize_failed = True
@@ -106,18 +111,18 @@ Guten Tag,
 
 # choose the text for the instruction depeding on the given task
         if self.experiment_type == "Yes/No Task":
-            self.instruction2 = """
+            self.instruction2 = u"""
 Es werden Ihnen nun verschiedene Stimuli präsentiert.
 \nEinige Stimuli bestehen nur aus dem Störrauschen, andere bestehen aus dem Rauschen und dem zu entdeckenden Signal.
 \nIn der Mitte des Bildschirms wird Ihnen nun ein Stimulus mit Signal als Beispiel gezeigt.
 \nWenn Sie das Signal während des Experiments entdecken, drücken Sie bitte "y".
 \nAls nächstes wird Ihnen nur das Störrauschen allein als Beispiel angezeigt.
 \n[Weiter]"""
-            self.instruction3 = """
+            self.instruction3 = u"""
 In der Mitte des Bildschirms wird Ihnen nun nur das Störrauschen angezeigt.
 \nFalls Sie gleich nur das Rauschen wahrnehmen sollten, drücken Sie bitte "n".
 \n[Weiter]"""
-            self.instruction4 = """
+            self.instruction4 = u"""
 Gleich startet das Experiment.
 \nZunächst wird Ihnen in der Mitte des Bildschirms ein Fixationskreuz angezeigt. Genau dort erscheint wenig später für kurze Zeit der Stimulus.
 \nNachdem der Stimulus wieder ausgeblendet wurde, startet die Antwortperiode.
@@ -130,18 +135,18 @@ Gleich startet das Experiment.
 \n[Weiter]"""
 
         if self.experiment_type == "2IFC":
-            self.instruction2 = """
+            self.instruction2 = u"""
 Im Experiment werden Ihnen immer zwei Stimuli in kurzer Folge präsentiert.
 \nEiner der beiden Stimuli besteht nur aus dem Störrauschen, der andere besteht immer aus dem Rauschen und dem zu entdeckenden Signal.
 \nIn der Mitte des Bildschirms wird Ihnen nun ein Stimulus mit Signal als Beispiel gezeigt.
 \nAls nächstes wird Ihnen nur das Störrauschen allein als Beispiel angezeigt.
 \n[Weiter]"""
-            self.instruction3 = """
+            self.instruction3 = u"""
 In der Mitte des Bildschirms wird Ihnen nun nur das Störrauschen angezeigt.
 \nSie haben im Folgenden die Aufgabe, anzugeben, ob das Signal im ersten oder im zweiten Stimulus angezeigt wurde.
 \nDazu drücken Sie, nachdem Sie beide Stimuli gesehen haben, "1" falls Sie das Signal im ersten vermuten, oder "2" falls Sie denken, es wäre im zweiten.
 \n[Weiter]"""
-            self.instruction4 = """
+            self.instruction4 = u"""
 Gleich startet das Experiment.
 \nZunächst wird Ihnen in der Mitte des Bildschirms ein Fixationskreuz angezeigt. Genau dort erscheint wenig später für kurze Zeit der erste Stimulus, gefolgt vom zweiten.
 \nNachdem der zweite Stimulus ausgeblendet wurde, startet die Antwortperiode.
@@ -154,18 +159,18 @@ Gleich startet das Experiment.
 \n[Weiter]"""
 
         if self.experiment_type == "4IFC":
-            self.instruction2 = """
+            self.instruction2 = u"""
 Im Experiment werden Ihnen immer vier Stimuli in kurzer Folge präsentiert.
 \nDrei der Stimuli bestehen nur aus dem Störrauschen, einer besteht immer aus dem Rauschen und dem zu entdeckenden Signal.
 \nIn der Mitte des Bildschirms wird Ihnen nun ein Stimulus mit Signal als Beispiel gezeigt.
 \nAls nächstes wird Ihnen nur das Störrauschen allein als Beispiel angezeigt.
 \n[Weiter]"""
-            self.instruction3 = """
+            self.instruction3 = u"""
 In der Mitte des Bildschirms wird Ihnen nun nur das Störrauschen angezeigt.
 \nSie haben im Folgenden die Aufgabe, anzugeben in welchem der vier Stimuli das Signal angezeigt wurde.
 \nDazu drücken Sie, nachdem Sie die Stimuli gesehen haben, die entsprechende Zahl auf Ihrer Tastatur, also beispielsweise "3" falls Sie das Signal im dritten Stimulus vermuten.
 \n[Weiter]"""
-            self.instruction4 = """
+            self.instruction4 = u"""
 Gleich startet das Experiment.
 \nZunächst wird Ihnen in der Mitte des Bildschirms ein Fixationskreuz angezeigt. Genau dort erscheint wenig später für kurze Zeit der erste Stimulus, gefolgt von drei weiteren.
 \nNachdem der vierte und letzte Stimulus ausgeblendet wurde, startet die Antwortperiode.
@@ -177,18 +182,18 @@ Gleich startet das Experiment.
 \n[Weiter]"""
 
         if self.experiment_type == "Constant Stimuli":
-            self.instruction2 = """
+            self.instruction2 = u"""
 Im Experiment werden Ihnen immer zwei Stimuli in kurzer Folge präsentiert.
 \nDie Stimuli bestehen immer aus einem Störrauschen und einem Signal.
 \nIn der Mitte des Bildschirms wird Ihnen nun ein solcher Stimulus mit Signal als Beispiel gezeigt.
 \nAls nächstes ein Stimulus mit einem stärkeren Signal als Beispiel angezeigt.
 \n[Weiter]"""
-            self.instruction3 = """
+            self.instruction3 = u"""
 In der Mitte des Bildschirms wird Ihnen nun ein Stimulus mit einem stärkeren Signal angezeigt.
 \nSie haben im Folgenden die Aufgabe, anzugeben ob das Signal im ersten oder im zweiten Stimulus stärker war.
 \nDazu drücken Sie, nachdem Sie beide Stimuli gesehen haben, "1" falls Sie das erste Signal stärker empfanden, oder "2" falls Sie denken, das zweite war stärker.
 \n[Weiter]"""
-            self.instruction4 = """
+            self.instruction4 = u"""
 Gleich startet das Experiment.
 \nZunächst wird Ihnen in der Mitte des Bildschirms ein Fixationskreuz angezeigt. Genau dort erscheint wenig später für kurze Zeit der erste Stimulus, gefolgt vom zweiten.
 \nNachdem der zweite Stimulus ausgeblendet wurde, startet die Antwortperiode.
