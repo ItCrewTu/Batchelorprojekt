@@ -11,8 +11,8 @@ to start the experiment run this file
 from __future__ import unicode_literals, division, print_function
 import sys
 import random
+import ctypes
 from psychopy import core, event, visual
-from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
@@ -21,21 +21,27 @@ import h5py
 from matrix import BuildMatrix
 from trial_evaluation import TrialEvaluation
 from variable_store import VarStore
+<<<<<<< HEAD
 
 # prevents UnicodeDecodeError when loading instructions from variable_store
+=======
+>>>>>>> 545d632852273c262a86c976c707f948503fa594
 
+user32 = ctypes.windll.user32
+
+# works with 1 monitor; 2 monitors could potentially lead to problems
+screensize_x = user32.GetSystemMetrics(0)
+screensize_y = user32.GetSystemMetrics(1)
 
 # creates an object that opens the gui, stores the parameters of the gui-input
 # and checks if the input is correct 
 variables = VarStore()
+
 # initializes the VarStore-Object with the parameters of the first page
 # of the gui
 
     
 variables.init()
-
-#reload(sys)
-#sys.setdefaultencoding('utf8')
 
 # only if the gui button ok is pressed, the rest of the code will be executed
 #if not variables.gui.gui_input_var.OK:
@@ -47,7 +53,9 @@ variables.init()
 # initialize the variables with the parameters of the second gui-page
 variables.set_variables()
 
-
+# prevents UnicodeDecodeError when loading instructions from variable_store
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # Array for the correct answers per Trialblock
 data = []
@@ -83,12 +91,8 @@ def quit_exp(win):
 window = visual.Window(
     color=[0, 0, 0],
     fullscr=True,
-    size=[variables.screensize_x, variables.screensize_y],
+    size=[screensize_x, screensize_y],
     units='pix')
-
-# create a mouse object and set it's visibility to false
-m = event.Mouse(win = window)
-m.setVisible(False)
 
 # ensures that no globalKeys exist to prevent problems with binding
 event.globalKeys.remove(key='all')
@@ -145,7 +149,6 @@ trial = 0
 # new_signal_intensity is an intern variable which will be in- and decreased
 # thoughout the experiment, if "decrease_intensity" is activated;
 # initialized with the signal intensity from the gui
-new_signal_intensity = 0.0
 new_signal_intensity = variables.signal_intensity
 
 # saves the count of correct answers in one try
@@ -221,17 +224,17 @@ def create_image(stim):
 
     returns an "image" type visual.ImageStim
     '''
-
+    
     if (stim and variables.random_intensity):
         new_matrix = image_factory.build_matrix_with_random_signal()
     elif stim:
         new_matrix = image_factory.build_matrix_with_signal()
     else:
-        new_matrix = np.round_(image_factory.build_matrix_without_signal(), decimals=0)
+        new_matrix = image_factory.build_matrix_without_signal()
     image = visual.ImageStim(
         win=window,
         name='Matrix',
-        image= Image.fromarray(new_matrix),
+        image=new_matrix,
         mask=None,
         ori=0,
         pos=(0, 0),
@@ -252,6 +255,7 @@ has_stim = bool(random.getrandbits(1))
 
 # opposite of the random boolean has_stim
 has_stim_2 = not has_stim
+
 # creates an image consisting of noise or a stimulus + noise
 # NOCH GENUTZT?!
 #current_image = create_image(has_stim)
@@ -412,10 +416,8 @@ while trial_blocks < variables.trial_blocks:
 
         # if "decrease_intensity" == True, refresh the newSignalIntesity
         if variables.decrease_intensity:
-            print(new_signal_intensity)
-            print(variables.intensity_steps)
+
             new_signal_intensity = new_signal_intensity - variables.intensity_steps
-            print(new_signal_intensity)
             # update the "signal_intensity" of the variables object,
             # which belongs to the image_factory-object
             image_factory.variables.signal_intensity = new_signal_intensity
@@ -424,6 +426,7 @@ while trial_blocks < variables.trial_blocks:
             image_factory.refresh_signal_intensity()
 
             ### BETWEEN TRIALBLOCK COUNTER ###
+
         # countdown to show the trialblock is over and the next trialblock has
         # possibly new conditions or settings;
         # "trial_blocks" < "variables.trial_blocks" ensures the countdown isn't
@@ -912,8 +915,7 @@ while trial_blocks < variables.trial_blocks:
                     draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
-            
-            
+
              ### EVALUATION CONSTANT STIMULI ##
 
             # if trialComposition[i] == 12, start the evaluation for constant stimuli;
