@@ -15,9 +15,13 @@ from psychopy import core, event, visual
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
+import h5py
+
+
 from matrix import BuildMatrix
 from trial_evaluation import TrialEvaluation
 from variable_store import VarStore
+
 # prevents UnicodeDecodeError when loading instructions from variable_store
 
 
@@ -26,14 +30,16 @@ from variable_store import VarStore
 variables = VarStore()
 # initializes the VarStore-Object with the parameters of the first page
 # of the gui
+
+    
 variables.init()
 
 #reload(sys)
 #sys.setdefaultencoding('utf8')
 
 # only if the gui button ok is pressed, the rest of the code will be executed
-if not variables.gui.gui_input_var.OK:
-    variables.gui.core.quit()
+#if not variables.gui.gui_input_var.OK:
+#    variables.gui.core.quit()
 
 ###### STOP #######
 
@@ -46,6 +52,15 @@ variables.set_variables()
 # Array for the correct answers per Trialblock
 data = []
 
+# create file
+f = h5py.File("mytestfile.hdf5", "w")
+
+grp = f.create_group("subgroup")
+
+stimutry = [200]
+
+grp.create_dataset("another_dataset", stimutry , dtype='f')
+
 
 def quit_exp(win):
     '''
@@ -55,7 +70,7 @@ def quit_exp(win):
 
     this function draws "Beenden" on the screen and closes the window after 1 second
     '''
-    
+    draw_component.setAutoDraw(False)
     win.flip()
     quit_inst.draw()
     win.flip()
@@ -186,6 +201,9 @@ positive_feedback = build_cross("lime")
 negative_feedback = build_cross("red")
 fixation_cross = build_cross("black")
 
+# in case for leaving the instruction draw quit needs 
+draw_component = fixation_cross
+
 
 #
 def create_image(stim):
@@ -235,7 +253,8 @@ has_stim = bool(random.getrandbits(1))
 # opposite of the random boolean has_stim
 has_stim_2 = not has_stim
 # creates an image consisting of noise or a stimulus + noise
-current_image = create_image(has_stim)
+# NOCH GENUTZT?!
+#current_image = create_image(has_stim)
 
 
 # to save the starting signal_intensity, initialized once at the start of the experiment
@@ -468,8 +487,10 @@ while trial_blocks < variables.trial_blocks:
             # if trial_composition[i] == 1, draw the fixation cross
             if i < len(
                     variables.trial_composition) and variables.trial_composition[i] == 1:
-                fixation_cross.setAutoDraw(True)
-
+                
+                draw_component = fixation_cross
+                draw_component.setAutoDraw(True)
+                
                 # blocked indicates wether a component is running (blocked = True)
                 # or not (blocked = False); it also guarantees that "frame_remains"
                 # is only initialized once at the start of the component
@@ -485,7 +506,7 @@ while trial_blocks < variables.trial_blocks:
                 # set blocked to False (component is done)
                 # and stop drawing component (setAutodraw(false))
                 if trial_clock.getTime() > frame_remains:
-                    fixation_cross.setAutoDraw(False)
+                    draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
 
@@ -522,13 +543,13 @@ while trial_blocks < variables.trial_blocks:
                     # has_stim decides wether we have an image with noise
                     # or with noise + stimulus
                     has_stim = bool(random.getrandbits(1))
-                    current_image = create_image(has_stim)
+                    draw_component = create_image(has_stim)
                     # draw that image
-                    current_image.setAutoDraw(True)
+                    draw_component.setAutoDraw(True)
 
                 if trial_clock.getTime() > frame_remains:
                     #component is done
-                    current_image.setAutoDraw(False)
+                    draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
 
@@ -594,24 +615,24 @@ while trial_blocks < variables.trial_blocks:
                 # assign response_test_person to a cross in the right color
                 if response_test_person == 0:
                     # no answer --> "specific_feedback" = black cross
-                    specific_feedback = fixation_cross
+                    draw_component = fixation_cross
 
                 if response_test_person == 1 or response_test_person == 3:
                     # hit or correct rejection --> "specific_feedback" = green
                     # cross
-                    specific_feedback = positive_feedback
+                    draw_component = positive_feedback
 
                 if response_test_person == 2 or response_test_person == 4:
                     # miss or false alarm --> "specific_feedback" = red cross
-                    specific_feedback = negative_feedback
+                    draw_component = negative_feedback
 
                 # draw the cross in evaluated color
-                specific_feedback.setAutoDraw(True)
+                draw_component.setAutoDraw(True)
 
                 # component is over, reset everything to be ready for the
                 # next trialcomponent
                 if trial_clock.getTime() > frame_remains:
-                    specific_feedback.setAutoDraw(False)
+                    draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
 
@@ -649,8 +670,8 @@ while trial_blocks < variables.trial_blocks:
                     # stimulus
                     has_stim_2 = not has_stim
                     # create a new matrix with the opposite of the first one
-                    current_image = create_image(has_stim_2)
-                    current_image.setAutoDraw(True)
+                    draw_component = create_image(has_stim_2)
+                    draw_component.setAutoDraw(True)
                     # calculate the remaining time
                     frame_remains = trial_clock.getTime() + variables.time_stimulus - \
                         window.monitorFramePeriod * 0.75
@@ -658,7 +679,7 @@ while trial_blocks < variables.trial_blocks:
 
                 if trial_clock.getTime() > frame_remains:
                     #component is done
-                    current_image.setAutoDraw(False)
+                    draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
 
@@ -729,16 +750,16 @@ while trial_blocks < variables.trial_blocks:
                     # if the counter-variable "image_number" is equal to
                     # "image_with_stim", draw an image with noise + stimulus
                     if image_with_stim == image_number:
-                        current_image = create_image(True)
+                        draw_component = create_image(True)
 
                     # if image_with_stim != image_number --> draw an image
                     # (just noise)
                     else:
-                        current_image = create_image(False)
+                        draw_component = create_image(False)
 
                     # setAutoDraw(True) for the "current_image" initialized
                     # above
-                    current_image.setAutoDraw(True)
+                    draw_component.setAutoDraw(True)
                     # increase the counter-variable "image_number"
                     image_number = image_number + 1
                     frame_remains = trial_clock.getTime() + variables.time_stimulus - \
@@ -747,7 +768,7 @@ while trial_blocks < variables.trial_blocks:
 
                 if trial_clock.getTime() > frame_remains:
                     #component is done
-                    current_image.setAutoDraw(False)
+                    draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
 
@@ -866,7 +887,7 @@ while trial_blocks < variables.trial_blocks:
                         image_factory.refresh_signal_intensity()
                         # create an image (noise + stimulus) with updated
                         # intensity
-                        current_image = create_image(True)
+                        draw_component = create_image(True)
 
                     # if second_is_constant != True --> draw the constant
                     # stimulus
@@ -877,18 +898,18 @@ while trial_blocks < variables.trial_blocks:
                         image_factory.refresh_signal_intensity()
                         # create an image (noise + stimulus) with updated
                         # intensity
-                        current_image = create_image(True)
+                        draw_component = create_image(True)
 
                     blocked = True
                     frame_remains = trial_clock.getTime() + variables.time_stimulus - \
                         window.monitorFramePeriod * 0.75
-                    current_image.setAutoDraw(True)
+                    draw_component.setAutoDraw(True)
                     # negate the variable "second_is_constant" so it executes
                     # the opposite stimulus the next time
                     second_is_constant = not second_is_constant
 
                 if trial_clock.getTime() > frame_remains:
-                    current_image.setAutoDraw(False)
+                    draw_component.setAutoDraw(False)
                     i = i + 1
                     blocked = False
             
