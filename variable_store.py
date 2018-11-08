@@ -6,7 +6,7 @@ stores all the input variables from the gui so other classes can acces it
 from __future__ import unicode_literals, division, print_function
 import os
 import sys
-
+from psychopy import core
 from gui import StateCheckIn
 
 
@@ -27,7 +27,7 @@ class VarStore:
         ###name of the object###
 
         if not self.gui.gui_input.OK:
-            self.gui.core.quit()
+            core.quit()
 
     # initialize variables with the parameters of the gui class
         # no check needed
@@ -75,24 +75,29 @@ class VarStore:
             self.gui.gui_input_var.data[8], 0, 10)
         # no check
         self.stimulus_size_pixels = self.gui.gui_input_var.data[9]
+        
+        self.signal_picture = self.gui.gui_input_var.data[10]
+        
+        self.signal_colour = self.gui.gui_input_var.data[11]
+        
         # 0-15
         self.signal_intensity = self.within_range(
-            self.gui.gui_input_var.data[10], 1, 15)
+            self.gui.gui_input_var.data[12], 1, 15)
         # 50-200
         self.mean_noise = self.within_range(
-            self.gui.gui_input_var.data[11], 50, 200)
+            self.gui.gui_input_var.data[13], 50, 200)
         # 0-40
         self.standard_deviation_noise = self.within_range(
-            self.gui.gui_input_var.data[12], 0, 40)
+            self.gui.gui_input_var.data[14], 0, 40)
 
-        self.decrease_intensity = self.gui.gui_input_var.data[13]
+        self.decrease_intensity = self.gui.gui_input_var.data[15]
         # steps * trialblock have to be less than signal_intensity
         self.intensity_steps = self.within_range(
-            self.gui.gui_input_var.data[14], 0.1, 10)
+            self.gui.gui_input_var.data[16], 0.1, 10)
         if (self.intensity_steps * self.trial_blocks >
                 self.signal_intensity and self.decrease_intensity):
             self.initialize_failed = True
-        self.random_intensity = self.gui.gui_input_var.data[15]
+        self.random_intensity = self.gui.gui_input_var.data[17]
 
         self.data_path = self.gui.this_dir + os.sep + u'data/' + \
             self.name_testperson + "_Durchgang" + self.session_number + ".tsv"
@@ -204,6 +209,10 @@ Gleich startet das Experiment.
 \nDanach erscheint wieder das Fixationskreuz und ein neuer Durchgang startet.
 \nWenn Sie nun auf "w" drücken startet das Experiment. Wir empfehlen, Ihre Finger schon auf die entsprechenden Tasten zu legen.
 \n[Weiter]"""
+        
+# only if the gui button ok is pressed, the rest of the code will be executed
+        if not self.gui.gui_input_var.OK:
+            core.quit()
 
 #
 #        if self.experiment_type == "Yes/No Task":

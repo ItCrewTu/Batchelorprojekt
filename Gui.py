@@ -6,7 +6,7 @@ provides the functions to create a gui
 import os
 import sys
 import ctypes
-from psychopy import gui
+from psychopy import gui,core
 
 
 class StateCheckIn:
@@ -70,6 +70,8 @@ class StateCheckIn:
         
         self.gui_input_var.addText("Signaleinstellungen:")
         
+        self.gui_input_var.addField("Signal auswählen", choices=["A","Haus"])# 10
+        self.gui_input_var.addField("Signal auswählen", choices=["Schwarz Weiss","Bunt"])# 11
         self.gui_input_var.addField("Stärke des Signals:", 11.0)  # 10
         self.gui_input_var.addField("Mittelwert", 128.0)  # 11
         self.gui_input_var.addField("Standartabweichung", 30.0)  # 12

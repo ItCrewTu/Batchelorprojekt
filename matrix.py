@@ -38,15 +38,24 @@ class BuildMatrix:
 
         # directory the script is in, for loading the image below
         script_dir = os.path.dirname(__file__)
-
+        
+        if self.variables.signal_picture == "Haus":
+            if self.variables.stimulus_size_pixels == "64x64":
+                rel_path = "Haus64x64.jpg"
+            if self.variables.stimulus_size_pixels == "128x128":
+                rel_path = "Haus128x128.jpg"
+            if self.variables.stimulus_size_pixels == "256x256":
+                rel_path = "Haus256x256.jpg"
+            
         # assign the chosen pixelsize from the gui to the variable "rel_path"
-        if self.variables.stimulus_size_pixels == "64x64":
-            rel_path = "A64.jpg"
-        if self.variables.stimulus_size_pixels == "128x128":
-            rel_path = "A128.jpg"
-        if self.variables.stimulus_size_pixels == "256x256":
-            rel_path = "A256.jpg"
-
+        if self.variables.signal_picture == "A":
+            if self.variables.stimulus_size_pixels == "64x64":
+                rel_path = "A64.jpg"
+            if self.variables.stimulus_size_pixels == "128x128":
+                rel_path = "A128.jpg"
+            if self.variables.stimulus_size_pixels == "256x256":
+                rel_path = "A256.jpg"
+        print(rel_path)
         # create the datapath and load the image in "img"
         # the image needs a white background (fill_value = 255) and a dark stimulus
         image_path = os.path.join(script_dir, rel_path)
@@ -178,10 +187,9 @@ class BuildMatrix:
         this function returns an Image-type
         '''
 
-        # initialize a random, gausian distributed noise_matrix
-        noise_matrix = np.random.normal(
-            self.variables.mean_noise, self.variables.standard_deviation_noise, [
-                self.pixelwidth, self.pixelwidth])
+
+
+
         # creates an empty noise_matrix with "depth" 3
         noise_matrix_3d = np.zeros(
             (self.pixelwidth, self.pixelwidth, 3), dtype=np.uint8)
@@ -189,11 +197,30 @@ class BuildMatrix:
         # put all the values from "noise_matrix" into each level of "noise_matrix_3d";
         # if each level is the same, you get a gray noise (from white over
         # gray to black)
-        noise_matrix_3d[:, :, 0] = noise_matrix[:, :]
-        noise_matrix_3d[:, :, 1] = noise_matrix[:, :]
-        noise_matrix_3d[:, :, 2] = noise_matrix[:, :]
-
         
+        if self.variables.signal_colour == "Schwarz Weiss":        
+            # initialize a random, gausian distributed noise_matrix
+            noise_matrix = np.random.normal(
+                self.variables.mean_noise, self.variables.standard_deviation_noise, [
+                    self.pixelwidth, self.pixelwidth])
+                
+            noise_matrix_3d[:, :, 0] = noise_matrix[:, :]
+            noise_matrix_3d[:, :, 1] = noise_matrix[:, :]
+            noise_matrix_3d[:, :, 2] = noise_matrix[:, :]
+            
+        if self.variables.signal_colour == "Bunt": 
+            
+            noise_matrix = np.random.normal(
+                self.variables.mean_noise, self.variables.standard_deviation_noise, [
+                    self.pixelwidth, self.pixelwidth, 3])
+                
+            noise_matrix_3d[:, :, 0] = noise_matrix[:, :,0]
+            noise_matrix_3d[:, :, 1] = noise_matrix[:, :,1]
+            noise_matrix_3d[:, :, 2] = noise_matrix[:, :,2]
+                
+
+#
+#        
 
         
         return noise_matrix_3d
