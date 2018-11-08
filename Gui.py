@@ -5,12 +5,7 @@ provides the functions to create a gui
 """
 import os
 import sys
-<<<<<<< HEAD
 from psychopy import gui
-=======
-import ctypes
-from psychopy import gui,core
->>>>>>> e532bf2e5078f72fd5e3d6cb487a73ae07aab99e
 
 
 class StateCheckIn:
@@ -23,7 +18,6 @@ class StateCheckIn:
     def check_in_name_and_type(self):
         """
         creates a gui for testperson data and experiment type
-<<<<<<< HEAD
         
         """
         # ensure that the path starts from the same directery this script is in
@@ -72,76 +66,12 @@ class StateCheckIn:
         self.gui_input_var.addField("Stärke des Signals:", 11)  # 13
         self.gui_input_var.addField("Mittelwert", 128)  # 14
         self.gui_input_var.addField("Standartabweichung", 30)  # 15
-=======
-        
-        """
-        user32 = ctypes.windll.user32
-    
-    # works with 1 monitor; 2 monitors could potentially lead to problems
-        self.guiscreensize_x = user32.GetSystemMetrics(0)
-        self.guiscreensize_y = user32.GetSystemMetrics(1)
-        
-        # ensure that the path starts from the same directery this script is in
-        self.this_dir = os.path.dirname(
-            os.path.abspath(__file__)).decode(
-                sys.getfilesystemencoding())
-        os.chdir(self.this_dir)
-
-        # input window for the data of this testperson
-        self.gui_input = gui.Dlg(title="Signalentdeckung.py",pos = ((self.guiscreensize_x / 2 - 200),10))
-        self.gui_input.addField("Versuchsperson:")  # 0
-        self.gui_input.addField("Durchgang:")  # 1
-        self.gui_input.addField(
-            "Experimenttyp:",
-            choices=[
-                "Yes/No Task",
-                "2IFC",
-                "4IFC",
-                "Constant Stimuli"])  # 2
-        self.gui_input.show()
-
-    def set_variables(self, experiment_type):
-        """
-        creates a gui to configure the experiment
-        
-        """
-
-        self.gui_input_var = gui.Dlg(title="Signalentdeckung.py", pos = ((self.guiscreensize_x / 2 - 200),10))
-        
-        self.gui_input_var.addText("Einstellungen:")
-
-        self.gui_input_var.addField("Trialanzahl", 10)  # 0
-        self.gui_input_var.addField("Anzahl der Trialblocks", 5)  # 1
-        self.gui_input_var.addField("Anzahl der Testtrials", 5)  # 2
-        self.gui_input_var.addField("Dauer Fixationskreuz", 0.2)  # 3
-        self.gui_input_var.addField("Dauer Maske:", 0.1)  # 4
-        self.gui_input_var.addField("Dauer Stimulus", 0.2)  # 5
-        self.gui_input_var.addField("Dauer Antwortperiode", 2)  # 6
-        self.gui_input_var.addField("Dauer Feedback", 0.2)  # 7
-        self.gui_input_var.addField("Dauer Pause", 0.1)  # 8
-        self.gui_input_var.addField("Stimulusgröße in Pixeln",
-                                    choices=["64x64", "128x128", "256x256"])  # 9
-        
-        self.gui_input_var.addText("Signaleinstellungen:")
-        
-        self.gui_input_var.addField("Signal auswählen", choices=["A","Haus"])# 10
-        self.gui_input_var.addField("Signal auswählen", choices=["Schwarz Weiss","Bunt"])# 11
-        self.gui_input_var.addField("Stärke des Signals:", 11.0)  # 10
-        self.gui_input_var.addField("Mittelwert", 128.0)  # 11
-        self.gui_input_var.addField("Standartabweichung", 30.0)  # 12
->>>>>>> e532bf2e5078f72fd5e3d6cb487a73ae07aab99e
         
         # dont show the last 3 options for the constant stimuli task 
         if experiment_type == "Constant Stimuli":
             self.gui_input_var.show()
-<<<<<<< HEAD
         self.gui_input_var.addField("Kontrast - X je Trialblock", False)  # 16
         self.gui_input_var.addField("Schrittweite", 2)  # 17
         self.gui_input_var.addField("Zufällig", False)
-=======
-        self.gui_input_var.addField("Kontrast - X je Trialblock", False)  # 13
-        self.gui_input_var.addField("Schrittweite", 0.5)  # 14
-        self.gui_input_var.addField("Zufällig", False)  #15
->>>>>>> e532bf2e5078f72fd5e3d6cb487a73ae07aab99e
         if experiment_type != "Constant Stimuli":
             self.gui_input_var.show()

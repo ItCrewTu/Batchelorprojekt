@@ -16,7 +16,6 @@ class BuildMatrix:
     provides all operations to create an image for a signal detection task
 
     '''
-    
 
     def give_image_factory_var(self, store):
         '''
@@ -38,24 +37,15 @@ class BuildMatrix:
 
         # directory the script is in, for loading the image below
         script_dir = os.path.dirname(__file__)
-        
-        if self.variables.signal_picture == "Haus":
-            if self.variables.stimulus_size_pixels == "64x64":
-                rel_path = "Haus64x64.jpg"
-            if self.variables.stimulus_size_pixels == "128x128":
-                rel_path = "Haus128x128.jpg"
-            if self.variables.stimulus_size_pixels == "256x256":
-                rel_path = "Haus256x256.jpg"
-            
+
         # assign the chosen pixelsize from the gui to the variable "rel_path"
-        if self.variables.signal_picture == "A":
-            if self.variables.stimulus_size_pixels == "64x64":
-                rel_path = "A64.jpg"
-            if self.variables.stimulus_size_pixels == "128x128":
-                rel_path = "A128.jpg"
-            if self.variables.stimulus_size_pixels == "256x256":
-                rel_path = "A256.jpg"
-        print(rel_path)
+        if self.variables.stimulus_size_pixels == "64x64":
+            rel_path = "A64.jpg"
+        if self.variables.stimulus_size_pixels == "128x128":
+            rel_path = "A128.jpg"
+        if self.variables.stimulus_size_pixels == "256x256":
+            rel_path = "A256.jpg"
+
         # create the datapath and load the image in "img"
         # the image needs a white background (fill_value = 255) and a dark stimulus
         image_path = os.path.join(script_dir, rel_path)
@@ -122,12 +112,11 @@ class BuildMatrix:
             self.inverse_stim_matrix[self.indices_x[i],
                                      self.indices_y[i],
                                      2] = self.variables.signal_intensity
-            
+
             # if all 3 levels of a pixel got the new "signal_intensity",
             # increase the counter ("i")
             i = i + 1
-      
-        
+
     def build_matrix_with_signal(self):
         '''
         has no input
@@ -141,9 +130,10 @@ class BuildMatrix:
         # (which is created by the function "build_matrix_without_signal")
         noise_signal_matrix = (
             self.build_matrix_without_signal()) + self.inverse_stim_matrix
-        np.round_(noise_signal_matrix, decimals=0)
-        
-        return noise_signal_matrix
+
+        # make an image out of the array
+        self.image = Image.fromarray(noise_signal_matrix)
+        return self.image
 
     def build_matrix_with_random_signal(self):
         '''
@@ -176,7 +166,9 @@ class BuildMatrix:
         noise_signal_matrix = (
             self.build_matrix_without_signal()) + self.inverse_stim_matrix
 
-        return noise_signal_matrix
+        # make an image out of the array
+        self.image = Image.fromarray(noise_signal_matrix)
+        return self.image
 
     def build_matrix_without_signal(self):
         '''
@@ -187,8 +179,10 @@ class BuildMatrix:
         this function returns an Image-type
         '''
 
-
-
+        # initialize a random, gausian distributed noise_matrix
+        noise_matrix = np.random.normal(
+            self.variables.mean_noise, self.variables.standard_deviation_noise, [
+                self.pixelwidth, self.pixelwidth])
 
         # creates an empty noise_matrix with "depth" 3
         noise_matrix_3d = np.zeros(
@@ -197,30 +191,10 @@ class BuildMatrix:
         # put all the values from "noise_matrix" into each level of "noise_matrix_3d";
         # if each level is the same, you get a gray noise (from white over
         # gray to black)
-        
-        if self.variables.signal_colour == "Schwarz Weiss":        
-            # initialize a random, gausian distributed noise_matrix
-            noise_matrix = np.random.normal(
-                self.variables.mean_noise, self.variables.standard_deviation_noise, [
-                    self.pixelwidth, self.pixelwidth])
-                
-            noise_matrix_3d[:, :, 0] = noise_matrix[:, :]
-            noise_matrix_3d[:, :, 1] = noise_matrix[:, :]
-            noise_matrix_3d[:, :, 2] = noise_matrix[:, :]
-            
-        if self.variables.signal_colour == "Bunt": 
-            
-            noise_matrix = np.random.normal(
-                self.variables.mean_noise, self.variables.standard_deviation_noise, [
-                    self.pixelwidth, self.pixelwidth, 3])
-                
-            noise_matrix_3d[:, :, 0] = noise_matrix[:, :,0]
-            noise_matrix_3d[:, :, 1] = noise_matrix[:, :,1]
-            noise_matrix_3d[:, :, 2] = noise_matrix[:, :,2]
-                
+        noise_matrix_3d[:, :, 0] = noise_matrix[:, :]
+        noise_matrix_3d[:, :, 1] = noise_matrix[:, :]
+        noise_matrix_3d[:, :, 2] = noise_matrix[:, :]
 
-#
-#        
-
-        
-        return noise_matrix_3d
+        # make an image out of "noise_matrix_3d"
+        self.image = Image.fromarray(noise_matrix_3d)
+        return self.image
